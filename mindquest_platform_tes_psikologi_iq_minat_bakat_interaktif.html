@@ -1,0 +1,3571 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MindQuest — Platform Tes Psikologi, IQ & Minat Bakat Interaktif</title>
+
+  <!-- Google Fonts: Inter & Plus Jakarta Sans untuk tipografi modern dan ramah semua usia -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- FontAwesome 6.5.1 via CDN untuk ikonografi lengkap -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+  <!-- Tailwind CSS v3.4.17 via CDN -->
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+
+  <!-- Konfigurasi Kustom Tailwind CSS sesuai Spesifikasi Warna & Desain -->
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'system-ui', 'sans-serif'],
+            display: ['Plus Jakarta Sans', 'Inter', 'sans-serif'],
+          },
+          colors: {
+            mq: {
+              bg: '#F8FAFC',       /* Latar belakang utama soft/light */
+              indigo: '#6366F1',   /* Aksen utama Indigo/Violet */
+              indigoDark: '#4F46E5',
+              emerald: '#10B981',  /* Indikator sukses / selesai */
+              amber: '#F59E0B',    /* Aksen sertifikat / prestasi */
+            }
+          }
+        }
+      }
+    };
+  </script>
+
+  <!-- Custom CSS untuk animasi transisi SPA, Age-Adaptive Styling, dan Media Cetak Sertifikat -->
+  <style>
+    body {
+      background-color: #F8FAFC;
+      color: #0F172A;
+      font-family: 'Inter', sans-serif;
+      overflow-x: hidden;
+    }
+
+    h1, h2, h3, h4, .font-heading {
+      font-family: 'Plus Jakarta Sans', 'Inter', sans-serif;
+    }
+
+    /* Transisi Halus Antar Halaman (SPA) dan Pertanyaan Kuis */
+    .fade-enter {
+      animation: fadeSlideIn 0.32s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    }
+
+    @keyframes fadeSlideIn {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    /* Efek Age-Adaptive Theme Nuances */
+    body[data-age-mode="anak"] .age-adaptive-card {
+      border-radius: 1.5rem;
+      border-width: 2px;
+    }
+    body[data-age-mode="remaja"] .age-adaptive-card {
+      border-radius: 1.25rem;
+    }
+    body[data-age-mode="dewasa"] .age-adaptive-card {
+      border-radius: 0.875rem;
+    }
+
+    /* Custom Scrollbar Halus */
+    ::-webkit-scrollbar {
+      width: 8px;
+      height: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #F1F5F9;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #CBD5E1;
+      border-radius: 9999px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #94A3B8;
+    }
+
+    /* Aturan Khusus Cetak Sertifikat (window.print) */
+    @media print {
+      body * {
+        visibility: hidden !important;
+      }
+      #certificatePrintArea,
+      #certificatePrintArea * {
+        visibility: visible !important;
+      }
+      #certificatePrintArea {
+        position: fixed !important;
+        left: 0 !important;
+        top: 0 !important;
+        width: 100vw !important;
+        height: 100vh !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        background: #FFFFFF !important;
+        padding: 0 !important;
+        margin: 0 !important;
+        box-shadow: none !important;
+      }
+      #certificateCanvas {
+        max-width: 100% !important;
+        max-height: 100% !important;
+        width: auto !important;
+        height: auto !important;
+      }
+    }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col bg-[#F8FAFC] text-slate-800 selection:bg-indigo-500 selection:text-white" data-age-mode="all">
+
+  <!-- ===================================================================== -->
+  <!-- 1. HEADER / NAVBAR (SPA NAVIGATION & USER PROFILE WIDGET)             -->
+  <!-- ===================================================================== -->
+  <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-200/80 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 sm:h-20 flex items-center justify-between gap-3">
+      
+      <!-- Logo Interaktif + Nama MindQuest -->
+      <button type="button" id="brandLogoBtn" class="flex items-center gap-3 text-left group focus:outline-none">
+        <div class="w-10 h-10 sm:w-11 sm:h-11 rounded-xl bg-gradient-to-br from-indigo-500 via-indigo-600 to-violet-600 flex items-center justify-center text-white shadow-md shadow-indigo-500/20 group-hover:scale-105 transition-transform">
+          <i class="fa-solid fa-brain text-lg sm:text-xl"></i>
+        </div>
+        <div>
+          <div class="flex items-center gap-1.5">
+            <span class="font-heading font-extrabold text-lg sm:text-xl tracking-tight text-slate-900 group-hover:text-indigo-600 transition-colors">MindQuest</span>
+            <span class="hidden sm:inline-block text-[10px] font-bold uppercase tracking-wider px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-600 border border-indigo-200">ID</span>
+          </div>
+          <p class="text-[11px] text-slate-500 hidden sm:block">Psikologi, IQ &amp; Minat Bakat Interaktif</p>
+        </div>
+      </button>
+
+      <!-- Navigasi Utama (Desktop) -->
+      <nav class="hidden md:flex items-center gap-1 bg-slate-100/80 p-1.5 rounded-xl border border-slate-200/60" aria-label="Menu Utama">
+        <button type="button" data-nav="home" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 bg-white text-indigo-600 shadow-sm">
+          <i class="fa-solid fa-house text-xs"></i>
+          <span>Beranda</span>
+        </button>
+        <button type="button" data-nav="catalog" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900">
+          <i class="fa-solid fa-compass text-xs"></i>
+          <span>Pilih Tes</span>
+        </button>
+        <button type="button" data-nav="history" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900">
+          <i class="fa-solid fa-clock-rotate-left text-xs"></i>
+          <span>Riwayat Tes</span>
+          <span id="navHistoryCountBadge" class="ml-0.5 px-1.5 py-0.2 text-[11px] rounded-full bg-indigo-100 text-indigo-700 font-bold">0</span>
+        </button>
+        <button type="button" data-nav="about" class="nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900">
+          <i class="fa-solid fa-circle-info text-xs"></i>
+          <span>Tentang Kami</span>
+        </button>
+      </nav>
+
+      <!-- Widget Profil Pengguna & Sertifikat -->
+      <div class="flex items-center gap-2 sm:gap-3">
+        <!-- Indikator Sertifikat (Amber Badge) -->
+        <button type="button" id="headerCertQuickBtn" title="Lihat Koleksi Sertifikat & Riwayat" class="flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-xl bg-amber-50 hover:bg-amber-100/80 border border-amber-200/80 text-amber-800 transition-all">
+          <i class="fa-solid fa-award text-amber-500 text-sm sm:text-base"></i>
+          <div class="text-left">
+            <span id="headerCertCount" class="text-xs sm:text-sm font-extrabold text-amber-900">0</span>
+            <span class="hidden lg:inline text-xs font-semibold text-amber-700">Sertifikat</span>
+          </div>
+        </button>
+
+        <!-- Tombol Profil Pengguna (Klik untuk Ubah Nama & Usia) -->
+        <button type="button" id="openProfileModalBtn" class="flex items-center gap-2.5 pl-2 pr-3 py-1.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-200 shadow-xs transition-all group">
+          <div id="headerUserAvatar" class="w-8 h-8 rounded-lg bg-indigo-600 text-white font-bold text-xs flex items-center justify-center shadow-xs">
+            MQ
+          </div>
+          <div class="text-left hidden sm:block max-w-[130px]">
+            <p id="headerUserName" class="text-xs font-bold text-slate-800 truncate group-hover:text-indigo-600 transition-colors">Sahabat MindQuest</p>
+            <p id="headerUserAgeLabel" class="text-[10px] font-medium text-slate-500 truncate">Semua Usia</p>
+          </div>
+          <i class="fa-solid fa-pen-to-square text-slate-400 group-hover:text-indigo-600 text-xs"></i>
+        </button>
+
+        <!-- Tombol Menu Mobile -->
+        <button type="button" id="mobileMenuToggleBtn" class="md:hidden w-10 h-10 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 flex items-center justify-center transition-colors" aria-label="Buka Menu Navigasi">
+          <i id="mobileMenuIcon" class="fa-solid fa-bars text-base"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Drawer Navigasi Mobile -->
+    <div id="mobileNavDrawer" class="hidden md:hidden border-t border-slate-200 bg-white px-4 pt-2 pb-4 space-y-1.5">
+      <button type="button" data-nav="home" class="mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between bg-indigo-50 text-indigo-700">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-house w-4 text-center"></i> Beranda</span>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </button>
+      <button type="button" data-nav="catalog" class="mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between text-slate-700 hover:bg-slate-50">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-compass w-4 text-center"></i> Pilih Tes (Katalog)</span>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </button>
+      <button type="button" data-nav="history" class="mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between text-slate-700 hover:bg-slate-50">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-clock-rotate-left w-4 text-center"></i> Riwayat &amp; Sertifikat</span>
+        <span id="mobileHistoryCountBadge" class="px-2 py-0.5 text-xs rounded-full bg-indigo-100 text-indigo-700 font-bold">0</span>
+      </button>
+      <button type="button" data-nav="about" class="mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between text-slate-700 hover:bg-slate-50">
+        <span class="flex items-center gap-2.5"><i class="fa-solid fa-circle-info w-4 text-center"></i> Tentang Kami</span>
+        <i class="fa-solid fa-chevron-right text-xs opacity-60"></i>
+      </button>
+    </div>
+  </header>
+
+  <!-- Banner Notifikasi Melanjutkan Sesi Kuis yang Tersimpan (Jika Ada) -->
+  <div id="savedSessionBanner" class="hidden bg-indigo-900 text-white px-4 py-2.5 text-xs sm:text-sm">
+    <div class="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
+      <div class="flex items-center gap-2">
+        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-ping"></span>
+        <span>Anda memiliki sesi tes <strong id="savedSessionTestTitle" class="underline decoration-indigo-400"></strong> yang belum diselesaikan.</span>
+      </div>
+      <div class="flex items-center gap-2">
+        <button type="button" id="resumeSavedSessionBtn" class="px-3 py-1 rounded-lg bg-emerald-500 hover:bg-emerald-600 text-white font-bold text-xs transition-colors">
+          Lanjutkan Tes
+        </button>
+        <button type="button" id="discardSavedSessionBtn" class="px-2.5 py-1 rounded-lg bg-white/10 hover:bg-white/20 text-slate-200 text-xs transition-colors">
+          Hapus Sesi
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 2. KONTainer UTAMA SPA (BERANDA, KATALOG, QUIZ ENGINE, RESULT, DLL)   -->
+  <!-- ===================================================================== -->
+  <main class="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-6 sm:py-10">
+
+    <!-- =================================================================== -->
+    <!-- VIEW A: BERANDA (HOME VIEW)                                         -->
+    <!-- =================================================================== -->
+    <section id="view-home" class="spa-view fade-enter space-y-10 sm:space-y-14">
+      
+      <!-- Hero Banner Utama -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-indigo-900 text-white p-6 sm:p-10 lg:p-12 shadow-xl border border-indigo-800/40">
+        <!-- Dekorasi Latar Belakang Abstrak -->
+        <div class="absolute -top-24 -right-24 w-80 h-80 rounded-full bg-indigo-500/20 blur-3xl pointer-events-none"></div>
+        <div class="absolute -bottom-24 -left-16 w-72 h-72 rounded-full bg-emerald-500/15 blur-3xl pointer-events-none"></div>
+
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          <!-- Kolom Kiri: Headline & CTA -->
+          <div class="lg:col-span-7 space-y-5">
+            <div class="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-white/10 border border-white/15 backdrop-blur-xs text-xs sm:text-sm font-medium text-indigo-200">
+              <i class="fa-solid fa-sparkles text-amber-400"></i>
+              <span>Platform Asesmen Psikologi &amp; Edukasi Adaptif #1</span>
+            </div>
+
+            <h1 class="font-heading text-3xl sm:text-4xl lg:text-5xl font-extrabold tracking-tight leading-tight">
+              Temukan Potensi &amp; <span class="text-transparent bg-clip-text bg-gradient-to-r from-indigo-300 via-emerald-300 to-amber-200">Kepribadianmu</span>
+            </h1>
+
+            <p class="text-slate-300 text-sm sm:text-base lg:text-lg leading-relaxed max-w-2xl">
+              Kenali gaya belajar, tipe kepribadian MBTI, kapasitas penalaran logika IQ, hingga jurusan karier masa depan melalui asesmen interaktif yang dirancang khusus untuk usia <strong class="text-white">Anak-anak</strong>, <strong class="text-white">Remaja</strong>, hingga <strong class="text-white">Dewasa</strong>.
+            </p>
+
+            <!-- Tombol Call to Action (CTA) -->
+            <div class="flex flex-wrap items-center gap-3 pt-2">
+              <button type="button" id="heroStartExploreBtn" class="px-6 py-3.5 rounded-xl bg-indigo-600 hover:bg-indigo-500 text-white font-bold text-sm sm:text-base shadow-lg shadow-indigo-600/30 transition-all flex items-center gap-2.5">
+                <span>Mulai Tes Sekarang</span>
+                <i class="fa-solid fa-arrow-right"></i>
+              </button>
+              <button type="button" id="heroQuickMbtiBtn" class="px-5 py-3.5 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-sm sm:text-base border border-white/15 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-bolt text-amber-400"></i>
+                <span>Coba Tes MBTI Cepat</span>
+              </button>
+            </div>
+
+            <!-- Statistik Keunggulan Singkat -->
+            <div class="grid grid-cols-3 gap-4 pt-4 border-t border-white/10 max-w-lg">
+              <div>
+                <p class="text-lg sm:text-2xl font-extrabold text-white">4 Modul</p>
+                <p class="text-xs text-slate-300">Psikologi, IQ &amp; Bakat</p>
+              </div>
+              <div>
+                <p class="text-lg sm:text-2xl font-extrabold text-emerald-400">100% Instan</p>
+                <p class="text-xs text-slate-300">Skoring &amp; Analitik Visual</p>
+              </div>
+              <div>
+                <p class="text-lg sm:text-2xl font-extrabold text-amber-400">Sertifikat</p>
+                <p class="text-xs text-slate-300">Unduh PNG &amp; Cetak PDF</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Kartu Visual Interaktif Preview Segmen Usia -->
+          <div class="lg:col-span-5">
+            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 sm:p-6 space-y-4 shadow-2xl">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div class="flex items-center gap-2.5">
+                  <div class="w-9 h-9 rounded-lg bg-emerald-500/20 border border-emerald-400/40 flex items-center justify-center text-emerald-300">
+                    <i class="fa-solid fa-chart-pie"></i>
+                  </div>
+                  <div>
+                    <p class="text-xs font-bold uppercase tracking-wider text-indigo-200">Pratinjau Sistem</p>
+                    <h2 class="text-sm font-bold text-white">Desain Adaptif Segmen Usia</h2>
+                  </div>
+                </div>
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-500/20 text-emerald-300 border border-emerald-400/30">Siap Uji</span>
+              </div>
+
+              <!-- 3 Pill Segmen di Hero -->
+              <div class="space-y-2.5 text-xs">
+                <button type="button" data-hero-age="anak" class="hero-age-Jump w-full p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition-all flex items-center gap-3 text-left">
+                  <div class="w-10 h-10 rounded-xl bg-amber-400/20 text-amber-300 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-puzzle-piece"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-white">Anak Dini (3–12 Tahun)</p>
+                    <p class="text-slate-300 truncate">Visual cerah, ramah anak, gaya belajar &amp; otak</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                </button>
+
+                <button type="button" data-hero-age="remaja" class="hero-age-Jump w-full p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition-all flex items-center gap-3 text-left">
+                  <div class="w-10 h-10 rounded-xl bg-indigo-400/20 text-indigo-300 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-rocket"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-white">Remaja (13–18 Tahun)</p>
+                    <p class="text-slate-300 truncate">Penjurusan SMA/Kuliah (RIASEC) &amp; Gaya Belajar</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                </button>
+
+                <button type="button" data-hero-age="dewasa" class="hero-age-Jump w-full p-3 rounded-xl bg-white/5 hover:bg-white/15 border border-white/10 transition-all flex items-center gap-3 text-left">
+                  <div class="w-10 h-10 rounded-xl bg-emerald-400/20 text-emerald-300 flex items-center justify-center text-lg shrink-0">
+                    <i class="fa-solid fa-briefcase"></i>
+                  </div>
+                  <div class="flex-1 min-w-0">
+                    <p class="font-bold text-white">Dewasa (19+ Tahun)</p>
+                    <p class="text-slate-300 truncate">MBTI 16 Tipe, IQ Logika Visual &amp; Karier</p>
+                  </div>
+                  <i class="fa-solid fa-chevron-right text-slate-400"></i>
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- FILTER KATEGORI USIA (AGE-ADAPTIVE CARDS)                         -->
+      <!-- ================================================================= -->
+      <div id="ageFilterSection" class="space-y-4">
+        <div class="flex flex-col sm:flex-row sm:items-end justify-between gap-2">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Personalisasi Pengalaman</span>
+            <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900">Pilih Kategori Usia Peserta</h2>
+          </div>
+          <p class="text-xs sm:text-sm text-slate-500">Tampilan &amp; rekomendasi tes menyesuaikan kategori usia yang dipilih</p>
+        </div>
+
+        <!-- 4 Kartu Filter Usia: Semua, Anak, Remaja, Dewasa -->
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <!-- Semua Usia -->
+          <button type="button" data-age-filter="all" class="age-filter-card group text-left p-5 rounded-2xl bg-white border-2 border-indigo-600 shadow-md transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-layer-group"></i>
+              </div>
+              <span class="age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-600 text-white">Aktif</span>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-base text-slate-900">Semua Kategori Usia</h3>
+              <p class="text-xs text-slate-500 mt-1">Tampilkan seluruh 4 modul tes populer tanpa batasan segmen usia.</p>
+            </div>
+          </button>
+
+          <!-- Anak (3-12 thn) -->
+          <button type="button" data-age-filter="anak" class="age-filter-card group text-left p-5 rounded-2xl bg-white hover:bg-amber-50/40 border-2 border-slate-200/80 hover:border-amber-400 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-child-reaching"></i>
+              </div>
+              <span class="age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800">3–12 Tahun</span>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-base text-slate-900">Anak (3–12 thn)</h3>
+              <p class="text-xs text-slate-500 mt-1">Visual cerah &amp; ramah anak. Fokus pada Gaya Belajar, Dominasi Otak &amp; Kreativitas.</p>
+            </div>
+          </button>
+
+          <!-- Remaja (13-18 thn) -->
+          <button type="button" data-age-filter="remaja" class="age-filter-card group text-left p-5 rounded-2xl bg-white hover:bg-indigo-50/40 border-2 border-slate-200/80 hover:border-indigo-400 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-user-astronaut"></i>
+              </div>
+              <span class="age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-100 text-indigo-800">13–18 Tahun</span>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-base text-slate-900">Remaja (13–18 thn)</h3>
+              <p class="text-xs text-slate-500 mt-1">Modern &amp; segar. Fokus pada Penjurusan Sekolah/Kuliah (RIASEC), Gaya Belajar &amp; MBTI.</p>
+            </div>
+          </button>
+
+          <!-- Dewasa (19+ thn) -->
+          <button type="button" data-age-filter="dewasa" class="age-filter-card group text-left p-5 rounded-2xl bg-white hover:bg-emerald-50/40 border-2 border-slate-200/80 hover:border-emerald-500 transition-all flex flex-col justify-between">
+            <div class="flex items-center justify-between mb-3">
+              <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-2xl group-hover:scale-110 transition-transform">
+                <i class="fa-solid fa-user-tie"></i>
+              </div>
+              <span class="age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-emerald-100 text-emerald-800">19+ Tahun</span>
+            </div>
+            <div>
+              <h3 class="font-heading font-bold text-base text-slate-900">Dewasa (19+ thn)</h3>
+              <p class="text-xs text-slate-500 mt-1">Minimalis, elegan &amp; profesional. Fokus pada MBTI 16 Tipe, IQ Logika Visual &amp; Karier.</p>
+            </div>
+          </button>
+        </div>
+
+        <!-- Banner Info Mode Usia Aktif -->
+        <div id="ageAdaptiveNotice" class="rounded-2xl p-4 bg-indigo-50/90 border border-indigo-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <div id="ageAdaptiveNoticeIcon" class="w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0">
+              <i class="fa-solid fa-wand-magic-sparkles"></i>
+            </div>
+            <div>
+              <p id="ageAdaptiveNoticeTitle" class="text-sm font-bold text-slate-900">Mode Eksplorasi Semua Usia Aktif</p>
+              <p id="ageAdaptiveNoticeDesc" class="text-xs text-slate-600">Menampilkan seluruh instrumen tes dari kategori Anak, Remaja, hingga Dewasa.</p>
+            </div>
+          </div>
+          <button type="button" id="goToFullCatalogBtn" class="text-xs font-bold text-indigo-600 hover:text-indigo-800 flex items-center gap-1.5 self-start sm:self-center">
+            <span>Buka Halaman Katalog Lengkap</span>
+            <i class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+      </div>
+
+      <!-- ================================================================= -->
+      <!-- GRID TES POPULER (BERANDA)                                        -->
+      <!-- ================================================================= -->
+      <div class="space-y-5">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Instrumen Terpopuler</span>
+            <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900">Pilih Modul Asesmen Interaktif</h2>
+          </div>
+          <div class="flex items-center gap-2 text-xs text-slate-500">
+            <i class="fa-solid fa-shield-halved text-emerald-500"></i>
+            <span>Data tersimpan otomatis di browser Anda (Privasi 100% Aman)</span>
+          </div>
+        </div>
+
+        <!-- Container Grid Tes Populer (Dirender secara dinamis dari JavaScript) -->
+        <div id="homePopularTestsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+
+      <!-- Alur Penggunaan Singkat -->
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs">
+        <div class="text-center max-w-2xl mx-auto mb-8">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Cara Kerja MindQuest</span>
+          <h2 class="font-heading text-xl sm:text-2xl font-extrabold text-slate-900 mt-1">3 Langkah Mudah Mendapatkan Sertifikat</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/60 flex flex-col items-start gap-3">
+            <div class="w-11 h-11 rounded-xl bg-indigo-600 text-white font-bold flex items-center justify-center text-base shadow-sm">1</div>
+            <h3 class="font-heading font-bold text-base text-slate-900">Pilih Kategori &amp; Modul Tes</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Sesuaikan rentang usia (Anak, Remaja, atau Dewasa) lalu pilih instrumen tes MBTI, IQ Logika Visual, RIASEC, atau Gaya Belajar.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/60 flex flex-col items-start gap-3">
+            <div class="w-11 h-11 rounded-xl bg-emerald-600 text-white font-bold flex items-center justify-center text-base shadow-sm">2</div>
+            <h3 class="font-heading font-bold text-base text-slate-900">Jawab Kuis Multi-Step Interaktif</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Nikmati tampilan kuis bebas distraksi dengan progress bar, penyimpanan sesi otomatis, dan timer khusus untuk Tes IQ.</p>
+          </div>
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/60 flex flex-col items-start gap-3">
+            <div class="w-11 h-11 rounded-xl bg-amber-500 text-white font-bold flex items-center justify-center text-base shadow-sm">3</div>
+            <h3 class="font-heading font-bold text-base text-slate-900">Analisis Grafik &amp; Unduh Sertifikat</h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">Dapatkan grafik radar/distribusi dimensi secara instan, simpan ke riwayat, dan unduh sertifikat resmi berformat PNG atau PDF.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW B: PILIH TES / KATALOG LENGKAP (CATALOG VIEW)                  -->
+    <!-- =================================================================== -->
+    <section id="view-catalog" class="spa-view hidden fade-enter space-y-8">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        <div class="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Katalog Asesmen MindQuest</span>
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Eksplorasi Seluruh Modul Tes</h1>
+            <p class="text-sm text-slate-600 mt-1">Pilih modul di bawah ini untuk memulai asesmen atau melihat kisi-kisi dimensi yang diukur.</p>
+          </div>
+
+          <!-- Pencarian & Filter Katalog -->
+          <div class="flex flex-wrap items-center gap-3">
+            <div class="relative flex-1 sm:w-64">
+              <i class="fa-solid fa-magnifying-glass absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs"></i>
+              <input type="text" id="catalogSearchInput" placeholder="Cari MBTI, IQ, RIASEC, Otak..." class="w-full pl-9 pr-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:outline-none focus:border-indigo-500 focus:bg-white transition-all" />
+            </div>
+            <select id="catalogAgeSelect" aria-label="Filter Usia Katalog" class="px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold text-slate-700 focus:outline-none focus:border-indigo-500">
+              <option value="all">Semua Usia</option>
+              <option value="anak">Anak (3–12 thn)</option>
+              <option value="remaja">Remaja (13–18 thn)</option>
+              <option value="dewasa">Dewasa (19+ thn)</option>
+            </select>
+          </div>
+        </div>
+
+        <!-- Grid Katalog -->
+        <div id="catalogTestsGrid" class="grid grid-cols-1 md:grid-cols-2 gap-6"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW C: ALUR & INTERAKSI TES (MULTI-STEP QUIZ ENGINE)               -->
+    <!-- =================================================================== -->
+    <section id="view-quiz" class="spa-view hidden fade-enter max-w-4xl mx-auto">
+      <div id="quizContainerCard" class="bg-white rounded-3xl border border-slate-200/90 shadow-lg overflow-hidden">
+        
+        <!-- Top Bar Kuis: Info Tes, Tombol Keluar, dan Timer (Khusus IQ/Logika) -->
+        <div id="quizHeaderBanner" class="bg-slate-900 text-white px-5 sm:px-8 py-4 flex flex-wrap items-center justify-between gap-3">
+          <div class="flex items-center gap-3">
+            <button type="button" id="quitQuizBtn" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors" title="Kembali ke Beranda (Progres Tersimpan)">
+              <i class="fa-solid fa-arrow-left text-sm"></i>
+            </button>
+            <div>
+              <div class="flex items-center gap-2">
+                <span id="quizCategoryBadge" class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-indigo-500/30 text-indigo-200 border border-indigo-400/30">Kategori</span>
+                <span id="quizAgeSegmentBadge" class="px-2 py-0.5 rounded-md text-[10px] font-bold uppercase tracking-wider bg-emerald-500/20 text-emerald-300">Usia</span>
+              </div>
+              <h2 id="quizActiveTitle" class="font-heading font-bold text-base sm:text-lg text-white mt-0.5">Nama Tes</h2>
+            </div>
+          </div>
+
+          <!-- Widget Timer (Muncul otomatis pada Tes IQ & Logika Visual) -->
+          <div class="flex items-center gap-3">
+            <div id="quizTimerBox" class="hidden items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-sm font-bold">
+              <i class="fa-regular fa-clock animate-pulse"></i>
+              <span id="quizTimerDisplay">08:00</span>
+            </div>
+
+            <!-- Toggle Auto-Advance (Otomatis Lanjut) -->
+            <label class="flex items-center gap-2 text-xs text-slate-300 cursor-pointer select-none bg-white/5 px-3 py-1.5 rounded-xl border border-white/10">
+              <input type="checkbox" id="quizAutoNextToggle" class="rounded text-indigo-500 focus:ring-0 accent-indigo-500 w-3.5 h-3.5" />
+              <span class="hidden sm:inline">Lanjut Otomatis</span>
+            </label>
+          </div>
+        </div>
+
+        <!-- Progress Bar Interaktif -->
+        <div class="bg-slate-50 px-5 sm:px-8 py-4 border-b border-slate-200/80 space-y-2.5">
+          <div class="flex items-center justify-between text-xs sm:text-sm">
+            <span id="quizProgressLabel" class="font-bold text-slate-700">Pertanyaan 1 dari 10</span>
+            <span id="quizProgressPercent" class="font-extrabold text-indigo-600">10% Selesai</span>
+          </div>
+          <div class="w-full h-2.5 bg-slate-200 rounded-full overflow-hidden">
+            <div id="quizProgressBarFill" class="h-full bg-gradient-to-r from-indigo-500 via-indigo-600 to-emerald-500 rounded-full transition-all duration-300" style="width: 10%"></div>
+          </div>
+          <!-- Indikator Nomor Soal (Pills) untuk loncat cepat -->
+          <div id="quizQuestionPills" class="flex items-center gap-1.5 overflow-x-auto py-1"></div>
+        </div>
+
+        <!-- Area Pertanyaan & Pilihan Jawaban -->
+        <div id="quizQuestionStage" class="p-5 sm:p-8 space-y-6">
+          <!-- Konteks / Dimensi Soal -->
+          <div class="flex items-center justify-between gap-2">
+            <span id="quizQuestionDimensionTag" class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-xs font-semibold bg-indigo-50 text-indigo-700 border border-indigo-200/60">
+              <i class="fa-solid fa-compass-drafting"></i>
+              <span>Dimensi Soal</span>
+            </span>
+            <span id="quizSavedStatusText" class="text-[11px] font-medium text-emerald-600 flex items-center gap-1">
+              <i class="fa-solid fa-cloud-arrow-up"></i> Progres tersimpan otomatis
+            </span>
+          </div>
+
+          <!-- Teks Pertanyaan Utama -->
+          <div class="space-y-4">
+            <h3 id="quizQuestionText" class="font-heading text-lg sm:text-xl lg:text-2xl font-bold text-slate-900 leading-snug">
+              Memuat pertanyaan...
+            </h3>
+            <!-- Area Puzzle Visual SVG (Khusus Soal Matriks / Pola Logika Visual) -->
+            <div id="quizVisualPuzzleBox" class="hidden p-4 sm:p-6 rounded-2xl bg-slate-50 border border-slate-200/80 flex flex-col items-center justify-center"></div>
+          </div>
+
+          <!-- Grid Pilihan Jawaban (Interactive Option Cards) -->
+          <div id="quizOptionsList" class="grid grid-cols-1 gap-3.5"></div>
+        </div>
+
+        <!-- Footer Navigasi Kuis: Tombol Sebelumnya & Selanjutnya / Selesai -->
+        <div class="px-5 sm:px-8 py-4 bg-slate-50 border-t border-slate-200/80 flex items-center justify-between gap-3">
+          <button type="button" id="quizPrevBtn" class="px-4 sm:px-5 py-2.5 rounded-xl bg-white hover:bg-slate-100 text-slate-700 font-semibold text-xs sm:text-sm border border-slate-200/90 transition-all flex items-center gap-2 disabled:opacity-40 disabled:pointer-events-none">
+            <i class="fa-solid fa-arrow-left"></i>
+            <span>Sebelumnya</span>
+          </button>
+
+          <div class="text-center hidden sm:block">
+            <p id="quizAnsweredCounter" class="text-xs font-medium text-slate-500">0 dari 10 terjawab</p>
+          </div>
+
+          <button type="button" id="quizNextBtn" class="px-5 sm:px-6 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2">
+            <span id="quizNextBtnLabel">Selanjutnya</span>
+            <i id="quizNextBtnIcon" class="fa-solid fa-arrow-right"></i>
+          </button>
+        </div>
+
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW D: HALAMAN HASIL & SKORING (RESULT DASHBOARD)                  -->
+    <!-- =================================================================== -->
+    <section id="view-result" class="spa-view hidden fade-enter space-y-8 max-w-5xl mx-auto">
+      
+      <!-- Banner Utama Hasil Asesmen -->
+      <div class="relative overflow-hidden rounded-3xl bg-gradient-to-br from-slate-900 via-indigo-950 to-slate-900 text-white p-6 sm:p-10 shadow-xl border border-indigo-800/40">
+        <div class="relative z-10 grid grid-cols-1 lg:grid-cols-12 gap-8 items-center">
+          
+          <div class="lg:col-span-7 space-y-4">
+            <div class="flex flex-wrap items-center gap-2">
+              <span class="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-500/20 border border-emerald-400/40 text-emerald-300 text-xs font-bold">
+                <i class="fa-solid fa-circle-check"></i> Asesmen Selesai
+              </span>
+              <span id="resultTestTitleBadge" class="px-3 py-1 rounded-full bg-white/10 text-indigo-200 text-xs font-semibold">Nama Tes</span>
+              <span id="resultDateBadge" class="text-xs text-slate-300">Tanggal</span>
+            </div>
+
+            <div class="space-y-1">
+              <p class="text-xs uppercase tracking-widest text-indigo-300 font-bold">Hasil Utama &amp; Klasifikasi</p>
+              <h1 id="resultHeadlineBadge" class="font-heading text-2xl sm:text-4xl font-extrabold text-white tracking-tight">
+                INTJ — Sang Arsitek Strategis
+              </h1>
+              <p id="resultSubheadline" class="text-amber-300 font-semibold text-sm sm:text-base">
+                Skor / Kategori Dominan
+              </p>
+            </div>
+
+            <p id="resultSummaryParagraph" class="text-slate-200 text-sm sm:text-base leading-relaxed">
+              Deskripsi mendalam mengenai hasil tes pengguna.
+            </p>
+
+            <!-- Tombol Action Utama sesuai Spesifikasi -->
+            <div class="flex flex-wrap items-center gap-3 pt-3">
+              <button type="button" id="resultOpenCertModalBtn" class="px-5 py-3 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-lg shadow-amber-500/25 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-award text-base"></i>
+                <span>Cetak / Unduh Sertifikat Hasil</span>
+              </button>
+
+              <button type="button" id="resultSaveHistoryBtn" class="px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-bookmark"></i>
+                <span id="resultSaveHistoryBtnText">Simpan Hasil ke Riwayat</span>
+              </button>
+
+              <button type="button" id="resultRetakeTestBtn" class="px-4 py-3 rounded-xl bg-white/10 hover:bg-white/20 text-white font-semibold text-xs sm:text-sm border border-white/15 transition-all flex items-center gap-2">
+                <i class="fa-solid fa-rotate-right"></i>
+                <span>Ulangi Tes</span>
+              </button>
+            </div>
+          </div>
+
+          <!-- Kolom Kanan: Kartu Skor Ringkas & Peserta -->
+          <div class="lg:col-span-5">
+            <div class="bg-white/10 backdrop-blur-md border border-white/15 rounded-2xl p-5 sm:p-6 space-y-4">
+              <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <div>
+                  <p class="text-[11px] uppercase tracking-wider text-indigo-200 font-semibold">Peserta Asesmen</p>
+                  <p id="resultUserNameDisplay" class="font-heading font-bold text-base text-white">Sahabat MindQuest</p>
+                </div>
+                <div class="text-right">
+                  <p class="text-[11px] uppercase tracking-wider text-indigo-200 font-semibold">Kode Hasil</p>
+                  <p id="resultCodeBadge" class="font-heading font-extrabold text-lg text-amber-400">INTJ</p>
+                </div>
+              </div>
+
+              <!-- Highlight Metrik Utama -->
+              <div id="resultKeyMetricsGrid" class="grid grid-cols-2 gap-3"></div>
+            </div>
+          </div>
+
+        </div>
+      </div>
+
+      <!-- Visualisasi Distribusi Skor (Canvas Radar/Polar Chart + CSS Progress Bars) -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Grafik Visual HTML5 Canvas -->
+        <div class="lg:col-span-5 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs flex flex-col items-center justify-between">
+          <div class="w-full flex items-center justify-between mb-2">
+            <div>
+              <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Peta Visual</span>
+              <h2 class="font-heading font-bold text-lg text-slate-900">Diagram Profil Dimensi</h2>
+            </div>
+            <i class="fa-solid fa-chart-radar text-indigo-500"></i>
+          </div>
+
+          <div class="relative w-full max-w-[300px] h-72 flex items-center justify-center my-auto">
+            <canvas id="resultRadarCanvas" width="320" height="290" class="max-w-full h-auto"></canvas>
+          </div>
+
+          <p class="text-[11px] text-slate-500 text-center">Grafik dihitung secara real-time berdasarkan bobot setiap jawaban Anda.</p>
+        </div>
+
+        <!-- Distribusi Persentase CSS Progress Bars -->
+        <div class="lg:col-span-7 bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-5">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-emerald-600">Rincian Kuantitatif</span>
+            <h2 class="font-heading font-bold text-lg text-slate-900">Distribusi Skor per Dimensi</h2>
+          </div>
+
+          <div id="resultDimensionBarsList" class="space-y-4"></div>
+        </div>
+      </div>
+
+      <!-- Penjelasan Mendalam: Kekuatan, Rekomendasi Pengembangan, & Karier/Belajar -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+        <!-- Kekuatan Utama -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-star"></i>
+          </div>
+          <h3 class="font-heading font-bold text-base text-slate-900">Kekuatan &amp; Potensi Utama</h3>
+          <ul id="resultStrengthsList" class="space-y-2 text-xs sm:text-sm text-slate-600"></ul>
+        </div>
+
+        <!-- Strategi Belajar / Pengembangan -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-lightbulb"></i>
+          </div>
+          <h3 class="font-heading font-bold text-base text-slate-900">Saran Pengembangan &amp; Belajar</h3>
+          <ul id="resultGrowthList" class="space-y-2 text-xs sm:text-sm text-slate-600"></ul>
+        </div>
+
+        <!-- Rekomendasi Karier / Penjurusan -->
+        <div class="bg-white rounded-3xl p-6 border border-slate-200/80 shadow-xs space-y-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-compass"></i>
+          </div>
+          <h3 class="font-heading font-bold text-base text-slate-900">Rekomendasi Bidang &amp; Karier</h3>
+          <div id="resultCareerPills" class="flex flex-wrap gap-2 pt-1"></div>
+        </div>
+      </div>
+
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW E: RIWAYAT TES & KOLEKSI SERTIFIKAT (HISTORY VIEW)             -->
+    <!-- =================================================================== -->
+    <section id="view-history" class="spa-view hidden fade-enter space-y-8">
+      <div class="bg-white rounded-3xl p-6 sm:p-8 border border-slate-200/80 shadow-xs space-y-6">
+        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-slate-200/80 pb-5">
+          <div>
+            <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Arsip Personal Browser</span>
+            <h1 class="font-heading text-2xl sm:text-3xl font-extrabold text-slate-900 mt-1">Riwayat Tes &amp; Sertifikat Saya</h1>
+            <p class="text-xs sm:text-sm text-slate-500 mt-1">Seluruh hasil tes yang Anda simpan tersimpan aman di penyimpanan lokal perangkat ini.</p>
+          </div>
+          <div class="flex items-center gap-2.5">
+            <button type="button" id="historyGoTakeTestBtn" class="px-4 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs sm:text-sm font-bold transition-all flex items-center gap-2">
+              <i class="fa-solid fa-plus"></i>
+              <span>Ambil Tes Baru</span>
+            </button>
+            <button type="button" id="clearAllHistoryBtn" class="px-4 py-2.5 rounded-xl bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 text-xs sm:text-sm font-semibold transition-all flex items-center gap-2">
+              <i class="fa-solid fa-trash-can"></i>
+              <span>Bersihkan Riwayat</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Ringkasan Statistik Pengguna -->
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+          <div class="p-4 rounded-2xl bg-slate-50 border border-slate-200/70 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-indigo-100 text-indigo-600 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-clipboard-check"></i>
+            </div>
+            <div>
+              <p class="text-xs text-slate-500 font-medium">Total Asesmen Tersimpan</p>
+              <p id="historyStatTotal" class="font-heading font-extrabold text-xl text-slate-900">0 Tes</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-amber-50/60 border border-amber-200/70 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-amber-100 text-amber-600 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-certificate"></i>
+            </div>
+            <div>
+              <p class="text-xs text-amber-800 font-medium">Sertifikat Resmi Diraih</p>
+              <p id="historyStatCerts" class="font-heading font-extrabold text-xl text-amber-900">0 Sertifikat</p>
+            </div>
+          </div>
+
+          <div class="p-4 rounded-2xl bg-emerald-50/60 border border-emerald-200/70 flex items-center gap-3.5">
+            <div class="w-12 h-12 rounded-2xl bg-emerald-100 text-emerald-600 flex items-center justify-center text-xl">
+              <i class="fa-solid fa-user-check"></i>
+            </div>
+            <div>
+              <p class="text-xs text-emerald-800 font-medium">Profil Hasil Terakhir</p>
+              <p id="historyStatLatestBadge" class="font-heading font-extrabold text-base text-emerald-900 truncate">Belum Ada</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Daftar Riwayat (Dirender dari localStorage) -->
+        <div id="historyItemsContainer" class="space-y-4"></div>
+      </div>
+    </section>
+
+    <!-- =================================================================== -->
+    <!-- VIEW F: TENTANG KAMI & METODOLOGI (ABOUT VIEW)                      -->
+    <!-- =================================================================== -->
+    <section id="view-about" class="spa-view hidden fade-enter space-y-8">
+      <div class="bg-white rounded-3xl p-6 sm:p-10 border border-slate-200/80 shadow-xs space-y-8">
+        <div class="max-w-3xl space-y-3">
+          <span class="text-xs font-bold uppercase tracking-wider text-indigo-600">Tentang Platform MindQuest</span>
+          <h1 class="font-heading text-2xl sm:text-4xl font-extrabold text-slate-900">Mengenal Potensi Diri dengan Pendekatan Ilmiah &amp; Ramah Usia</h1>
+          <p class="text-sm sm:text-base text-slate-600 leading-relaxed">
+            <strong>MindQuest</strong> dirancang sebagai platform edukasi dan pemetaan psikologi mandiri yang menggabungkan instrumen populer dunia dengan antarmuka adaptif untuk tiga segmen perkembangan manusia: <strong>Anak Dini (3–12 thn)</strong>, <strong>Remaja (13–18 thn)</strong>, dan <strong>Dewasa (19+ thn)</strong>.
+          </p>
+        </div>
+
+        <!-- 4 Pilar Instrumen -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2">
+            <div class="flex items-center gap-2.5 text-indigo-600 font-bold text-sm">
+              <i class="fa-solid fa-users-viewfinder"></i>
+              <span>1. Tipologi Kepribadian MBTI (4 Dikotomi)</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Memetakan preferensi energi (Extraversion vs Introversion), pemrosesan informasi (Sensing vs Intuition), pengambilan keputusan (Thinking vs Feeling), dan orientasi hidup (Judging vs Perceiving) ke dalam 16 tipe kepribadian.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2">
+            <div class="flex items-center gap-2.5 text-emerald-600 font-bold text-sm">
+              <i class="fa-solid fa-brain"></i>
+              <span>2. Tes IQ &amp; Penalaran Logika Visual</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Mengukur ketajaman analisis pola matriks visual, deret numerik, silogisme deduktif, dan penalaran spasial dengan penghitung waktu mundur dinamis untuk mensimulasikan tes kognitif standar.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2">
+            <div class="flex items-center gap-2.5 text-amber-600 font-bold text-sm">
+              <i class="fa-solid fa-compass-drafting"></i>
+              <span>3. Minat Bakat &amp; Penjurusan (Holland RIASEC)</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Membantu siswa SMP/SMA dan mahasiswa menemukan kecocokan jurusan serta karier melalui 6 dimensi Holland Code: Realistic, Investigative, Artistic, Social, Enterprising, dan Conventional.
+            </p>
+          </div>
+
+          <div class="p-5 rounded-2xl bg-slate-50 border border-slate-200/70 space-y-2">
+            <div class="flex items-center gap-2.5 text-rose-600 font-bold text-sm">
+              <i class="fa-solid fa-palette"></i>
+              <span>4. Gaya Belajar VAK &amp; Dominasi Otak</span>
+            </div>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+              Dirancang khusus dengan bahasa ramah anak &amp; remaja untuk mengenali apakah peserta lebih cepat menyerap pelajaran secara Visual, Auditori, atau Kinestetik, sekaligus memetakan keseimbangan otak kiri dan kanan.
+            </p>
+          </div>
+        </div>
+
+        <!-- Catatan Etika & Privasi -->
+        <div class="p-5 rounded-2xl bg-indigo-50/70 border border-indigo-200/80 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+          <div class="space-y-1">
+            <h3 class="font-heading font-bold text-sm sm:text-base text-indigo-950">Privasi Lokal &amp; Penggunaan Edukasi</h3>
+            <p class="text-xs text-indigo-900/80">Seluruh perhitungan skor dan pembuatan sertifikat dilakukan 100% di dalam browser Anda menggunakan HTML5 Canvas dan LocalStorage tanpa mengirim data pribadi ke server eksternal.</p>
+          </div>
+          <button type="button" id="aboutBackToCatalogBtn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shrink-0 transition-colors">
+            Mulai Eksplorasi Tes
+          </button>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ===================================================================== -->
+  <!-- 3. MODAL GENERATOR SERTIFIKAT OTOMATIS (HTML5 CANVAS + PNG + PRINT)   -->
+  <!-- ===================================================================== -->
+  <div id="certificateModal" class="fixed inset-0 z-50 hidden bg-slate-950/75 backdrop-blur-xs flex items-center justify-center p-3 sm:p-6 overflow-y-auto">
+    <div class="bg-white rounded-3xl max-w-5xl w-full border border-slate-200 shadow-2xl overflow-hidden my-auto fade-enter">
+      
+      <!-- Header Modal Sertifikat -->
+      <div class="px-5 sm:px-8 py-4 bg-slate-900 text-white flex items-center justify-between gap-4">
+        <div class="flex items-center gap-3">
+          <div class="w-10 h-10 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-400 flex items-center justify-center text-lg">
+            <i class="fa-solid fa-award"></i>
+          </div>
+          <div>
+            <h2 class="font-heading font-bold text-base sm:text-lg">Generator Sertifikat Resmi MindQuest</h2>
+            <p class="text-xs text-slate-300">Sesuaikan nama lengkap pada sertifikat lalu unduh sebagai gambar PNG beresolusi tinggi atau cetak PDF.</p>
+          </div>
+        </div>
+        <button type="button" id="closeCertModalBtn" class="w-9 h-9 rounded-xl bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors" aria-label="Tutup Modal Sertifikat">
+          <i class="fa-solid fa-xmark"></i>
+        </button>
+      </div>
+
+      <!-- Bar Kustomisasi Cepat Nama & Tema Sertifikat -->
+      <div class="px-5 sm:px-8 py-3.5 bg-slate-50 border-b border-slate-200 flex flex-wrap items-center justify-between gap-3">
+        <div class="flex flex-wrap items-center gap-2 sm:gap-3 flex-1 min-w-[240px]">
+          <label for="certRecipientNameInput" class="text-xs font-bold text-slate-700 whitespace-nowrap">Nama di Sertifikat:</label>
+          <input type="text" id="certRecipientNameInput" maxlength="42" placeholder="Masukkan Nama Lengkap Anda" class="flex-1 max-w-xs px-3.5 py-1.5 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm font-semibold text-slate-900 focus:outline-none focus:border-indigo-600" />
+          <button type="button" id="refreshCertCanvasBtn" class="px-3 py-1.5 rounded-xl bg-indigo-50 hover:bg-indigo-100 text-indigo-700 font-bold text-xs border border-indigo-200 transition-colors">
+            <i class="fa-solid fa-rotate mr-1"></i> Perbarui Nama
+          </button>
+        </div>
+
+        <!-- Tombol Unduh PNG & Cetak PDF -->
+        <div class="flex items-center gap-2.5">
+          <button type="button" id="downloadCertPngBtn" class="px-4 sm:px-5 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs sm:text-sm shadow-md shadow-amber-500/20 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-download"></i>
+            <span>Unduh Sertifikat (.PNG)</span>
+          </button>
+          <button type="button" id="printCertPdfBtn" class="px-4 py-2 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-md shadow-indigo-500/20 transition-all flex items-center gap-2">
+            <i class="fa-solid fa-print"></i>
+            <span>Cetak / Simpan PDF</span>
+          </button>
+        </div>
+      </div>
+
+      <!-- Area Preview Canvas Sertifikat -->
+      <div id="certificatePrintArea" class="p-4 sm:p-8 bg-slate-100 flex items-center justify-center overflow-auto max-h-[72vh]">
+        <canvas id="certificateCanvas" width="1600" height="1130" class="w-full max-w-4xl h-auto rounded-xl shadow-xl border border-slate-300 bg-white"></canvas>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 4. MODAL EDIT PROFIL PENGGUNA (NAMA & RENTANG USIA)                   -->
+  <!-- ===================================================================== -->
+  <div id="profileModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-3xl max-w-md w-full border border-slate-200 shadow-2xl overflow-hidden fade-enter">
+      <div class="px-6 py-4 bg-slate-900 text-white flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <i class="fa-solid fa-user-gear text-indigo-400"></i>
+          <h3 class="font-heading font-bold text-base">Profil Peserta MindQuest</h3>
+        </div>
+        <button type="button" id="closeProfileModalBtn" class="w-8 h-8 rounded-lg bg-white/10 hover:bg-white/20 text-white flex items-center justify-center">
+          <i class="fa-solid fa-xmark text-sm"></i>
+        </button>
+      </div>
+
+      <form id="profileForm" class="p-6 space-y-4">
+        <div>
+          <label for="profileNameInput" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Nama Lengkap (Tercetak di Sertifikat)</label>
+          <input type="text" id="profileNameInput" required maxlength="42" placeholder="Contoh: Nadia Putri Pratama" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-900 focus:outline-none focus:border-indigo-600 focus:bg-white" />
+        </div>
+
+        <div>
+          <label for="profileAgeGroupSelect" class="block text-xs font-bold uppercase tracking-wider text-slate-600 mb-1.5">Segmen Usia Default</label>
+          <select id="profileAgeGroupSelect" class="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-300 text-sm font-semibold text-slate-800 focus:outline-none focus:border-indigo-600 focus:bg-white">
+            <option value="all">Semua Usia (Eksplorasi Umum)</option>
+            <option value="anak">Anak Dini (3–12 Tahun)</option>
+            <option value="remaja">Remaja (13–18 Tahun)</option>
+            <option value="dewasa">Dewasa (19+ Tahun)</option>
+          </select>
+        </div>
+
+        <div class="pt-2 flex items-center justify-end gap-2.5">
+          <button type="button" id="cancelProfileModalBtn" class="px-4 py-2.5 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+            Batal
+          </button>
+          <button type="submit" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white text-xs font-bold shadow-md shadow-indigo-500/20">
+            Simpan Profil
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 5. MODAL KONFIRMASI IN-PAGE (MENGGANTIKAN CONFIRM() BROWSER)          -->
+  <!-- ===================================================================== -->
+  <div id="confirmDialogModal" class="fixed inset-0 z-50 hidden bg-slate-950/60 backdrop-blur-xs flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-6 border border-slate-200 shadow-2xl space-y-4 fade-enter">
+      <div class="flex items-center gap-3">
+        <div class="w-10 h-10 rounded-xl bg-amber-100 text-amber-600 flex items-center justify-center text-lg shrink-0">
+          <i class="fa-solid fa-triangle-exclamation"></i>
+        </div>
+        <h3 id="confirmDialogTitle" class="font-heading font-bold text-base text-slate-900">Konfirmasi Tindakan</h3>
+      </div>
+      <p id="confirmDialogMessage" class="text-xs sm:text-sm text-slate-600 leading-relaxed">Apakah Anda yakin ingin melanjutkan?</p>
+      <div class="flex items-center justify-end gap-2.5 pt-2">
+        <button type="button" id="confirmDialogCancelBtn" class="px-4 py-2 rounded-xl bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-bold">
+          Batal
+        </button>
+        <button type="button" id="confirmDialogOkBtn" class="px-4 py-2 rounded-xl bg-rose-600 hover:bg-rose-700 text-white text-xs font-bold">
+          Ya, Lanjutkan
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================================================================== -->
+  <!-- 6. TOAST NOTIFICATION CONTAINER                                       -->
+  <!-- ===================================================================== -->
+  <div id="toastContainer" class="fixed bottom-5 right-5 z-50 flex flex-col gap-2 max-w-sm w-full pointer-events-none px-4 sm:px-0"></div>
+
+  <!-- ===================================================================== -->
+  <!-- 7. FOOTER                                                             -->
+  <!-- ===================================================================== -->
+  <footer class="bg-white border-t border-slate-200/80 mt-12 py-6">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex flex-col sm:flex-row items-center justify-between gap-4 text-xs text-slate-500">
+      <div class="flex items-center gap-2">
+        <span class="w-6 h-6 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-[11px]">
+          <i class="fa-solid fa-brain"></i>
+        </span>
+        <span class="font-bold text-slate-800">MindQuest</span>
+        <span>— Platform Tes &amp; Kuis Psikologi Edukasi Interaktif</span>
+      </div>
+      <p>&copy; 2026 MindQuest Assessment Center. 100% Client-Side &amp; Responsif.</p>
+    </div>
+  </footer>
+
+  <!-- ===================================================================== -->
+  <!-- 8. KODE JAVASCRIPT UTAMA (DATA TES, SPA ROUTER, ENGINE, SERTIFIKAT)   -->
+  <!-- ===================================================================== -->
+  <script>
+    /**
+     * ========================================================================
+     * BAGIAN 1: PENYIMPANAN AMAN (SAFE STORAGE WRAPPER)
+     * Membungkus localStorage & sessionStorage dalam try/catch agar aman di
+     * semua lingkungan browser dan sandbox.
+     * ========================================================================
+     */
+    const StorageKeys = {
+      USER_PROFILE: 'mindquest_user_profile_v1',
+      TEST_HISTORY: 'mindquest_test_history_v1',
+      ACTIVE_SESSION: 'mindquest_active_session_v1'
+    };
+
+    const SafeStorage = {
+      memoryFallback: {},
+      get(key, defaultVal) {
+        try {
+          const raw = window.localStorage.getItem(key);
+          return raw ? JSON.parse(raw) : defaultVal;
+        } catch (err) {
+          return this.memoryFallback[key] !== undefined ? this.memoryFallback[key] : defaultVal;
+        }
+      },
+      set(key, value) {
+        try {
+          window.localStorage.setItem(key, JSON.stringify(value));
+        } catch (err) {
+          this.memoryFallback[key] = value;
+        }
+      },
+      remove(key) {
+        try {
+          window.localStorage.removeItem(key);
+        } catch (err) {
+          delete this.memoryFallback[key];
+        }
+      }
+    };
+
+    /**
+     * ========================================================================
+     * BAGIAN 2: DATABASE LENGKAP 4 MODUL TES & PERTANYAAN (DUMMY REALISTIS)
+     * Mencakup:
+     * 1. Tes Kepribadian MBTI (16 Tipe) - 10 Pertanyaan
+     * 2. Tes IQ & Penalaran Logika Visual (dengan Timer + SVG Puzzle) - 10 Pertanyaan
+     * 3. Tes Minat Bakat & Penjurusan (Holland Code / RIASEC) - 9 Pertanyaan
+     * 4. Tes Gaya Belajar & Dominasi Otak (Khusus Anak/Remaja) - 8 Pertanyaan
+     * ========================================================================
+     */
+    const TESTS_DATABASE = [
+      // ----------------------------------------------------------------------
+      // MODUL 1: TES KEPRIBADIAN MBTI (16 TIPE)
+      // ----------------------------------------------------------------------
+      {
+        id: 'mbti',
+        title: 'Tes Kepribadian MBTI (16 Tipe)',
+        shortTitle: 'Tes Kepribadian MBTI',
+        category: 'Kepribadian & Psikologi',
+        ageSegments: ['dewasa', 'remaja'],
+        ageBadgeText: 'Remaja & Dewasa (13+ thn)',
+        durationMinutes: 10,
+        hasTimer: false,
+        icon: 'fa-solid fa-masks-theater',
+        accentColor: 'indigo',
+        badgeBg: 'bg-indigo-100 text-indigo-700 border-indigo-200',
+        description: 'Kenali 1 dari 16 tipe kepribadian Anda berdasarkan 4 dimensi psikologis (Extraversion/Introversion, Sensing/Intuition, Thinking/Feeling, Judging/Perceiving).',
+        dimensionsInfo: ['Extraversion (E) vs Introversion (I)', 'Sensing (S) vs Intuition (N)', 'Thinking (T) vs Feeling (F)', 'Judging (J) vs Perceiving (P)'],
+        questions: [
+          {
+            id: 'mbti_1',
+            dimensionLabel: 'Dimensi Energi: Extraversion (E) vs Introversion (I)',
+            text: 'Setelah melewati minggu kerja atau sekolah yang sangat padat, bagaimana cara terbaik Anda mengisi ulang energi (recharge)?',
+            options: [
+              { label: 'Berkumpul bersama teman-teman, menghadiri acara sosial, atau berbincang seru di luar.', scores: { E: 25, I: 0 } },
+              { label: 'Menghabiskan waktu tenang sendirian di kamar dengan buku, musik, atau hobi pribadi.', scores: { E: 0, I: 25 } },
+              { label: 'Mengobrol santai hanya dengan 1–2 sahabat terdekat di tempat yang tenang.', scores: { E: 8, I: 17 } },
+              { label: 'Beraktivitas di luar ruangan sambil menyapa orang-orang baru yang ditemui.', scores: { E: 20, I: 5 } }
+            ]
+          },
+          {
+            id: 'mbti_2',
+            dimensionLabel: 'Dimensi Energi: Extraversion (E) vs Introversion (I)',
+            text: 'Saat berada di dalam diskusi kelompok atau rapat baru, bagaimana gaya komunikasi Anda?',
+            options: [
+              { label: 'Langsung aktif berbicara, melontarkan ide secara spontan, dan memicu percakapan.', scores: { E: 25, I: 0 } },
+              { label: 'Mendengarkan dengan saksama dan menyusun pikiran matang-matang sebelum berbicara.', scores: { E: 0, I: 25 } },
+              { label: 'Mencatat poin penting lalu menyampaikan pendapat saat diminta atau di momen krusial.', scores: { E: 5, I: 20 } },
+              { label: 'Menjadi moderator tidak resmi agar suasana diskusi terasa hidup dan interaktif.', scores: { E: 20, I: 5 } }
+            ]
+          },
+          {
+            id: 'mbti_3',
+            dimensionLabel: 'Dimensi Informasi: Sensing (S) vs Intuition (N)',
+            text: 'Ketika mempelajari topik atau keahlian baru, pendekatan mana yang paling membuat Anda nyaman?',
+            options: [
+              { label: 'Mempelajari fakta konkret, langkah demi langkah praktis, dan contoh nyata yang sudah terbukti.', scores: { S: 25, N: 0 } },
+              { label: 'Memahami gambaran besar (big picture), konsep abstrak, dan kemungkinan inovasi di masa depan.', scores: { S: 0, N: 25 } },
+              { label: 'Langsung mempraktikkan prosedur standar sesuai instruksi manual yang terukur.', scores: { S: 20, N: 5 } },
+              { label: 'Mencari pola tersembunyi dan menghubungkan teori tersebut dengan ide-ide lintas bidang.', scores: { S: 5, N: 20 } }
+            ]
+          },
+          {
+            id: 'mbti_4',
+            dimensionLabel: 'Dimensi Informasi: Sensing (S) vs Intuition (N)',
+            text: 'Saat diminta menjelaskan sebuah proyek kepada orang lain, Anda cenderung fokus pada:',
+            options: [
+              { label: 'Detail pelaksanaan, rincian data, anggaran, dan realitas di lapangan saat ini.', scores: { S: 25, N: 0 } },
+              { label: 'Visi jangka panjang, makna filosofis, dan dampak transformasional dari proyek tersebut.', scores: { S: 0, N: 25 } },
+              { label: 'Kronologi kejadian secara berurutan dan akurat tanpa spekulasi berlebihan.', scores: { S: 20, N: 5 } },
+              { label: 'Metafora kreatif dan skenario "bagaimana jika" yang menggugah imajinasi pendengar.', scores: { S: 5, N: 20 } }
+            ]
+          },
+          {
+            id: 'mbti_5',
+            dimensionLabel: 'Dimensi Informasi: Sensing (S) vs Intuition (N)',
+            text: 'Manakah kutipan kerja yang paling menggambarkan diri Anda?',
+            options: [
+              { label: '"Percayalah pada apa yang dapat dilihat, diukur, dan dibuktikan secara nyata."', scores: { S: 25, N: 0 } },
+              { label: '"Segala pencapaian besar selalu dimulai dari imajinasi dan visi yang melampaui zaman."', scores: { S: 0, N: 25 } },
+              { label: '"Konsistensi merawat detail kecil adalah kunci kesempurnaan operasional."', scores: { S: 18, N: 7 } },
+              { label: '"Selalu ada cara baru yang belum pernah terpikirkan sebelumnya."', scores: { S: 7, N: 18 } }
+            ]
+          },
+          {
+            id: 'mbti_6',
+            dimensionLabel: 'Dimensi Keputusan: Thinking (T) vs Feeling (F)',
+            text: 'Ketika harus mengambil keputusan sulit dalam tim, apa pertimbangan utama Anda?',
+            options: [
+              { label: 'Logika objektif, efisiensi, keadilan berbasis aturan, dan analisis untung-rugi yang rasional.', scores: { T: 25, F: 0 } },
+              { label: 'Dampak emosional terhadap anggota tim, keharmonisan hubungan, dan nilai empati kemanusiaan.', scores: { T: 0, F: 25 } },
+              { label: 'Data kinerja dan indikator metrik yang paling masuk akal secara profesional.', scores: { T: 20, F: 5 } },
+              { label: 'Mencari titik tengah agar tidak ada pihak yang merasa kecil hati atau terabaikan.', scores: { T: 5, F: 20 } }
+            ]
+          },
+          {
+            id: 'mbti_7',
+            dimensionLabel: 'Dimensi Keputusan: Thinking (T) vs Feeling (F)',
+            text: 'Saat seorang sahabat menceritakan masalahnya kepada Anda, respons alami pertama Anda adalah:',
+            options: [
+              { label: 'Menganalisis akar masalahnya dan menawarkan solusi taktis langkah demi langkah.', scores: { T: 25, F: 0 } },
+              { label: 'Memberikan dukungan emosional, mendengarkan dengan penuh empati, dan memvalidasi perasaannya.', scores: { T: 0, F: 25 } },
+              { label: 'Membantu memetakan pro dan kontra dari pilihan tindakan yang bisa ia ambil.', scores: { T: 18, F: 7 } },
+              { label: 'Menunjukkan kepedulian hangat agar ia merasa tidak sendirian menghadapi situasi itu.', scores: { T: 7, F: 18 } }
+            ]
+          },
+          {
+            id: 'mbti_8',
+            dimensionLabel: 'Dimensi Keputusan: Thinking (T) vs Feeling (F)',
+            text: 'Dalam menerima kritik atas hasil kerja Anda, hal apa yang paling Anda hargai?',
+            options: [
+              { label: 'Kritik yang jujur, langsung pada pokok permasalahan (to the point), dan berbasis argumen logis.', scores: { T: 25, F: 0 } },
+              { label: 'Masukan yang disampaikan secara santun, mengapresiasi usaha terlebih dahulu, dan membangun semangat.', scores: { T: 0, F: 25 } },
+              { label: 'Evaluasi objektif mengenai bagian teknis mana yang kurang akurat.', scores: { T: 20, F: 5 } },
+              { label: 'Diskusi personal dari hati ke hati yang tetap menjaga rasa saling menghormati.', scores: { T: 5, F: 20 } }
+            ]
+          },
+          {
+            id: 'mbti_9',
+            dimensionLabel: 'Dimensi Gaya Hidup: Judging (J) vs Perceiving (P)',
+            text: 'Bagaimana cara Anda mengelola tenggat waktu (deadline) tugas atau rencana perjalanan?',
+            options: [
+              { label: 'Membuat jadwal terperinci jauh-jauh hari, memiliki checklist rapi, dan menyelesaikannya sebelum tenggat.', scores: { J: 25, P: 0 } },
+              { label: 'Tetap fleksibel, mengikuti arus inspirasi, dan sering kali bekerja paling optimal saat mendekati deadline.', scores: { J: 0, P: 25 } },
+              { label: 'Menyusun target harian yang jelas agar tidak ada kejutan mendadak di akhir.', scores: { J: 20, P: 5 } },
+              { label: 'Menjaga rencana tetap terbuka agar bisa spontan mengubah arah bila muncul hal menarik.', scores: { J: 5, P: 20 } }
+            ]
+          },
+          {
+            id: 'mbti_10',
+            dimensionLabel: 'Dimensi Gaya Hidup: Judging (J) vs Perceiving (P)',
+            text: 'Seperti apa kondisi meja belajar atau ruang kerja ideal bagi Anda?',
+            options: [
+              { label: 'Terorganisir dengan sistematis; setiap barang memiliki tempat tetap dan label yang jelas.', scores: { J: 25, P: 0 } },
+              { label: 'Dinamis dan adaptif; berbagai proyek sedang terbuka bersamaan sesuai minat spontan saat itu.', scores: { J: 0, P: 25 } },
+              { label: 'Mengutamakan kepastian struktur kerja sebelum memulai aktivitas pagi.', scores: { J: 18, P: 7 } },
+              { label: 'Bebas bereksperimen tanpa terikat aturan urutan kerja yang kaku.', scores: { J: 7, P: 18 } }
+            ]
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------------------
+      // MODUL 2: TES IQ & PENALARAN LOGIKA VISUAL (DENGAN TIMER & SVG PUZZLE)
+      // ----------------------------------------------------------------------
+      {
+        id: 'iq',
+        title: 'Tes IQ & Penalaran Logika Visual',
+        shortTitle: 'Tes IQ & Logika Visual',
+        category: 'Kognitif & Intelegensi',
+        ageSegments: ['dewasa', 'remaja'],
+        ageBadgeText: 'Remaja & Dewasa (Timer 8 Menit)',
+        durationMinutes: 8,
+        hasTimer: true,
+        timerSeconds: 480,
+        icon: 'fa-solid fa-puzzle-piece',
+        accentColor: 'emerald',
+        badgeBg: 'bg-emerald-100 text-emerald-700 border-emerald-200',
+        description: 'Uji kapasitas kognitif, penalaran pola matriks visual, deret numerik, dan silogisme deduktif Anda dengan simulasi waktu mundur 8 menit.',
+        dimensionsInfo: ['Penalaran Numerik', 'Logika Spasial & Visual', 'Silogisme Deduktif', 'Kecepatan Pemrosesan'],
+        questions: [
+          {
+            id: 'iq_1',
+            dimensionLabel: 'Penalaran Deret Numerik',
+            text: 'Perhatikan pola deret angka berikut:  3,  7,  15,  31,  63,  ...  Angka berapakah yang tepat untuk melanjutkan deret tersebut?',
+            options: [
+              { label: '127  (Pola dikali 2 ditambah 1, atau +4, +8, +16, +32, +64)', isCorrect: true, dim: 'numeric' },
+              { label: '125', isCorrect: false, dim: 'numeric' },
+              { label: '119', isCorrect: false, dim: 'numeric' },
+              { label: '131', isCorrect: false, dim: 'numeric' }
+            ]
+          },
+          {
+            id: 'iq_2',
+            dimensionLabel: 'Logika Matriks Visual (Rotasi & Jumlah Sisi)',
+            text: 'Perhatikan matriks pola bangun datar di bawah ini! Setiap langkah ke kanan menambah jumlah sisi bangun datar sebanyak +1. Bangun manakah yang tepat untuk mengisi tanda tanya (?)',
+            visualSvg: `
+              <svg viewBox="0 0 420 110" class="w-full max-w-md h-auto">
+                <rect x="8" y="8" width="90" height="90" rx="14" fill="#EEF2FF" stroke="#6366F1" stroke-width="2.5"/>
+                <polygon points="53,24 26,78 80,78" fill="#6366F1"/>
+                <text x="53" y="94" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold">3 Sisi</text>
+
+                <rect x="112" y="8" width="90" height="90" rx="14" fill="#EEF2FF" stroke="#6366F1" stroke-width="2.5"/>
+                <rect x="132" y="26" width="50" height="50" fill="#4F46E5"/>
+                <text x="157" y="94" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold">4 Sisi</text>
+
+                <rect x="216" y="8" width="90" height="90" rx="14" fill="#EEF2FF" stroke="#6366F1" stroke-width="2.5"/>
+                <polygon points="261,22 290,43 279,77 243,77 232,43" fill="#4338CA"/>
+                <text x="261" y="94" text-anchor="middle" font-size="10" fill="#475569" font-weight="bold">5 Sisi</text>
+
+                <rect x="320" y="8" width="90" height="90" rx="14" fill="#FEF3C7" stroke="#F59E0B" stroke-width="2.5" stroke-dasharray="6,4"/>
+                <text x="365" y="64" text-anchor="middle" font-size="36" fill="#D97706" font-weight="800">?</text>
+              </svg>
+            `,
+            options: [
+              { label: 'Segi Enam Beraturan (Hexagon — 6 Sisi)', isCorrect: true, dim: 'spatial' },
+              { label: 'Segi Delapan Beraturan (Octagon — 8 Sisi)', isCorrect: false, dim: 'spatial' },
+              { label: 'Segitiga Siku-siku (3 Sisi)', isCorrect: false, dim: 'spatial' },
+              { label: 'Belah Ketupat (4 Sisi)', isCorrect: false, dim: 'spatial' }
+            ]
+          },
+          {
+            id: 'iq_3',
+            dimensionLabel: 'Silogisme & Penalaran Deduktif',
+            text: 'Semua peneliti di Laboratorium Alpha menguasai bahasa pemrograman Python. Sebagian peneliti di Laboratorium Alpha adalah lulusan Psikologi Kognitif. Kesimpulan manakah yang PASTI BENAR?',
+            options: [
+              { label: 'Sebagian peneliti yang lulusan Psikologi Kognitif di Laboratorium Alpha menguasai bahasa pemrograman Python.', isCorrect: true, dim: 'verbal' },
+              { label: 'Semua lulusan Psikologi Kognitif di dunia menguasai bahasa pemrograman Python.', isCorrect: false, dim: 'verbal' },
+              { label: 'Peneliti yang menguasai Python pasti bukan lulusan Psikologi Kognitif.', isCorrect: false, dim: 'verbal' },
+              { label: 'Tidak ada lulusan Psikologi Kognitif yang bekerja di Laboratorium Alpha.', isCorrect: false, dim: 'verbal' }
+            ]
+          },
+          {
+            id: 'iq_4',
+            dimensionLabel: 'Logika Matriks Visual (Proporsi Kuadran)',
+            text: 'Perhatikan pergeseran titik hitam pada kuadran kotak di bawah ini. Titik berpindah searah jarum jam satu sudut setiap langkah. Di manakah posisi titik hitam pada kotak ke-4 (?)',
+            visualSvg: `
+              <svg viewBox="0 0 420 110" class="w-full max-w-md h-auto">
+                <!-- Box 1: Kiri Atas -->
+                <rect x="10" y="10" width="85" height="85" rx="12" fill="#F8FAFC" stroke="#334155" stroke-width="2"/>
+                <line x1="52.5" y1="10" x2="52.5" y2="95" stroke="#CBD5E1" stroke-width="1.5"/>
+                <line x1="10" y1="52.5" x2="95" y2="52.5" stroke="#CBD5E1" stroke-width="1.5"/>
+                <circle cx="31" cy="31" r="11" fill="#10B981"/>
+
+                <!-- Box 2: Kanan Atas -->
+                <rect x="115" y="10" width="85" height="85" rx="12" fill="#F8FAFC" stroke="#334155" stroke-width="2"/>
+                <line x1="157.5" y1="10" x2="157.5" y2="95" stroke="#CBD5E1" stroke-width="1.5"/>
+                <line x1="115" y1="52.5" x2="200" y2="52.5" stroke="#CBD5E1" stroke-width="1.5"/>
+                <circle cx="179" cy="31" r="11" fill="#10B981"/>
+
+                <!-- Box 3: Kanan Bawah -->
+                <rect x="220" y="10" width="85" height="85" rx="12" fill="#F8FAFC" stroke="#334155" stroke-width="2"/>
+                <line x1="262.5" y1="10" x2="262.5" y2="95" stroke="#CBD5E1" stroke-width="1.5"/>
+                <line x1="220" y1="52.5" x2="305" y2="52.5" stroke="#CBD5E1" stroke-width="1.5"/>
+                <circle cx="284" cy="74" r="11" fill="#10B981"/>
+
+                <!-- Box 4: ? -->
+                <rect x="325" y="10" width="85" height="85" rx="12" fill="#ECFDF5" stroke="#10B981" stroke-width="2.5" stroke-dasharray="5,4"/>
+                <text x="367.5" y="63" text-anchor="middle" font-size="34" fill="#059669" font-weight="800">?</text>
+              </svg>
+            `,
+            options: [
+              { label: 'Kuadran Kiri Bawah', isCorrect: true, dim: 'spatial' },
+              { label: 'Kuadran Kiri Atas', isCorrect: false, dim: 'spatial' },
+              { label: 'Kuadran Kanan Atas', isCorrect: false, dim: 'spatial' },
+              { label: 'Tepat di Titik Tengah', isCorrect: false, dim: 'spatial' }
+            ]
+          },
+          {
+            id: 'iq_5',
+            dimensionLabel: 'Penalaran Numerik & Aljabar',
+            text: 'Jika 5 mesin cetak mampu memproduksi 500 buku dalam waktu 5 menit, berapa menit waktu yang dibutuhkan oleh 10 mesin cetak dengan kecepatan identik untuk memproduksi 1.000 buku?',
+            options: [
+              { label: 'Tetap 5 menit', isCorrect: true, dim: 'numeric' },
+              { label: '10 menit', isCorrect: false, dim: 'numeric' },
+              { label: '2,5 menit', isCorrect: false, dim: 'numeric' },
+              { label: '20 menit', isCorrect: false, dim: 'numeric' }
+            ]
+          },
+          {
+            id: 'iq_6',
+            dimensionLabel: 'Analogi Verbal & Konseptual',
+            text: 'KOMPAS : ARAH  =  TERMOMETER : ...',
+            options: [
+              { label: 'SUHU', isCorrect: true, dim: 'verbal' },
+              { label: 'CUACA', isCorrect: false, dim: 'verbal' },
+              { label: 'TEKANAN UDARA', isCorrect: false, dim: 'verbal' },
+              { label: 'KECEPATAN ANGIN', isCorrect: false, dim: 'verbal' }
+            ]
+          },
+          {
+            id: 'iq_7',
+            dimensionLabel: 'Penalaran Deret Fibonacci Modifikasi',
+            text: 'Tentukan angka yang tepat untuk mengisi titik-titik pada barisan berikut:  2,  3,  5,  8,  13,  21,  ...',
+            options: [
+              { label: '34  (Penjumlahan dua suku sebelumnya: 13 + 21)', isCorrect: true, dim: 'numeric' },
+              { label: '32', isCorrect: false, dim: 'numeric' },
+              { label: '35', isCorrect: false, dim: 'numeric' },
+              { label: '29', isCorrect: false, dim: 'numeric' }
+            ]
+          },
+          {
+            id: 'iq_8',
+            dimensionLabel: 'Logika Spasial 3 Dimensi',
+            text: 'Sebuah kubus kayu utuh dicat warna Indigo di seluruh 6 permukaan luarnya, lalu dipotong menjadi 27 kubus kecil berukuran sama (3 × 3 × 3). Berapa banyak kubus kecil yang TIDAK memiliki cat warna Indigo sama sekali di sisinya?',
+            options: [
+              { label: '1 kubus kecil (tepat di bagian inti tengah kubus)', isCorrect: true, dim: 'spatial' },
+              { label: '3 kubus kecil', isCorrect: false, dim: 'spatial' },
+              { label: '6 kubus kecil', isCorrect: false, dim: 'spatial' },
+              { label: '0 kubus kecil', isCorrect: false, dim: 'spatial' }
+            ]
+          },
+          {
+            id: 'iq_9',
+            dimensionLabel: 'Penalaran Urutan & Posisi Logis',
+            text: 'Dalam sebuah lomba lari cepat: Raka finis sebelum Dito. Bima finis setelah Citra, tetapi sebelum Raka. Siapakah yang berhasil mencapai garis finis PALING PERTAMA?',
+            options: [
+              { label: 'Citra', isCorrect: true, dim: 'verbal' },
+              { label: 'Bima', isCorrect: false, dim: 'verbal' },
+              { label: 'Raka', isCorrect: false, dim: 'verbal' },
+              { label: 'Dito', isCorrect: false, dim: 'verbal' }
+            ]
+          },
+          {
+            id: 'iq_10',
+            dimensionLabel: 'Pola Operasi Simbol Numerik',
+            text: 'Jika diketahui pola khusus:  4 ★ 2 = 14,   5 ★ 3 = 22,   dan   6 ★ 4 = 32.   Maka berapakah nilai dari   7 ★ 5 ?',
+            options: [
+              { label: '44  (Rumus pola: a² - b → 7² - 5 = 49 - 5 = 44)', isCorrect: true, dim: 'numeric' },
+              { label: '42', isCorrect: false, dim: 'numeric' },
+              { label: '38', isCorrect: false, dim: 'numeric' },
+              { label: '46', isCorrect: false, dim: 'numeric' }
+            ]
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------------------
+      // MODUL 3: TES MINAT BAKAT & PENJURUSAN (HOLLAND CODE / RIASEC)
+      // ----------------------------------------------------------------------
+      {
+        id: 'riasec',
+        title: 'Tes Minat Bakat & Penjurusan (Holland RIASEC)',
+        shortTitle: 'Tes Minat Bakat RIASEC',
+        category: 'Minat Bakat & Karier',
+        ageSegments: ['remaja', 'dewasa'],
+        ageBadgeText: 'Remaja & Dewasa (SMP/SMA/Kuliah)',
+        durationMinutes: 7,
+        hasTimer: false,
+        icon: 'fa-solid fa-compass-drafting',
+        accentColor: 'amber',
+        badgeBg: 'bg-amber-100 text-amber-800 border-amber-200',
+        description: 'Temukan pemetaan bakat karier dan rekomendasi jurusan sekolah/kuliah paling ideal melalui 6 dimensi Holland Code (Realistic, Investigative, Artistic, Social, Enterprising, Conventional).',
+        dimensionsInfo: ['Realistic (Praktis-Teknis)', 'Investigative (Riset-Sains)', 'Artistic (Kreatif-Desain)', 'Social (Edukasi-Empati)', 'Enterprising (Bisnis-Kepemimpinan)', 'Conventional (Data-Manajerial)'],
+        questions: [
+          {
+            id: 'riasec_1',
+            dimensionLabel: 'Eksplorasi Aktivitas Favorit #1',
+            text: 'Jika sekolah atau kampus Anda mengadakan pekan proyek lintas bidang, peran mana yang paling antusias Anda pilih?',
+            options: [
+              { label: 'Merakit prototipe perangkat keras, robotika, atau instalasi mekanis secara langsung.', scores: { R: 30, I: 10 } },
+              { label: 'Melakukan eksperimen laboratorium, mengolah hipotesis sains, dan memecahkan teka-teki rumit.', scores: { I: 30, R: 10 } },
+              { label: 'Mendesain identitas visual pameran, membuat video kreatif, atau menulis naskah pertunjukan.', scores: { A: 30, E: 5 } },
+              { label: 'Memandu pengunjung, mengajar adik kelas, dan mendampingi peserta yang kesulitan.', scores: { S: 30, E: 5 } }
+            ]
+          },
+          {
+            id: 'riasec_2',
+            dimensionLabel: 'Eksplorasi Aktivitas Favorit #2',
+            text: 'Dalam sebuah organisasi atau kepanitiaan acara, tugas apa yang paling membuat Anda bersinar?',
+            options: [
+              { label: 'Memimpin negosiasi sponsor, mempresentasikan ide di depan publik, dan menggerakkan tim.', scores: { E: 30, S: 10 } },
+              { label: 'Menyusun anggaran keuangan, mengelola database peserta, dan memastikan jadwal terdata rapi.', scores: { C: 30, R: 5 } },
+              { label: 'Menjadi konselor sebaya yang menjaga kekompakan dan kesejahteraan mental anggota tim.', scores: { S: 30, A: 5 } },
+              { label: 'Menyiapkan perlengkapan teknis panggung, tata suara, dan peralatan lapangan.', scores: { R: 30, C: 5 } }
+            ]
+          },
+          {
+            id: 'riasec_3',
+            dimensionLabel: 'Preferensi Mata Pelajaran & Topik',
+            text: 'Manakah kelompok topik bacaan atau tontonan yang paling sering Anda cari di waktu luang?',
+            options: [
+              { label: 'Sains populer, teknologi AI, kedokteran, astronomi, atau riset fenomena alam.', scores: { I: 30, C: 5 } },
+              { label: 'Seni rupa, musik, desain UI/UX, arsitektur, fotografi, atau penulisan kreatif.', scores: { A: 30, I: 5 } },
+              { label: 'Strategi bisnis startup, investasi, pemasaran digital, dan kisah kepemimpinan tokoh dunia.', scores: { E: 30, C: 10 } },
+              { label: 'Psikologi perkembangan, pendidikan, komunikasi antarpribadi, dan kegiatan kemanusiaan.', scores: { S: 30, A: 5 } }
+            ]
+          },
+          {
+            id: 'riasec_4',
+            dimensionLabel: 'Lingkungan Kerja Masa Depan',
+            text: 'Bayangkan diri Anda 7 tahun dari sekarang. Lingkungan kerja seperti apa yang paling Anda impikan?',
+            options: [
+              { label: 'Studio kreatif yang bebas, ekspresif, dan memungkinkan saya menciptakan karya orisinal.', scores: { A: 30, E: 5 } },
+              { label: 'Pusat riset, rumah sakit, atau perusahaan teknologi tempat saya menganalisis data mendalam.', scores: { I: 30, C: 10 } },
+              { label: 'Lapangan konstruksi, bengkel rekayasa mesin, alam terbuka, atau laboratorium manufaktur.', scores: { R: 30, I: 5 } },
+              { label: 'Perusahaan finansial atau korporasi dengan sistem prosedur terstruktur dan akurasi data tinggi.', scores: { C: 30, E: 10 } }
+            ]
+          },
+          {
+            id: 'riasec_5',
+            dimensionLabel: 'Cara Menyelesaikan Masalah',
+            text: 'Saat menghadapi masalah kompleks di lingkungan sekitar, cara apa yang paling alami bagi Anda?',
+            options: [
+              { label: 'Mengajak orang-orang berdiskusi, mendengarkan keluhan mereka, dan memberdayakan komunitas.', scores: { S: 30, E: 10 } },
+              { label: 'Menginisiasi gerakan perubahan, menggalang sumber daya, dan memimpin eksekusi solusi.', scores: { E: 30, S: 10 } },
+              { label: 'Membangun sistem pengarsipan, spreadsheet otomatis, dan SOP yang tertib agar masalah tak terulang.', scores: { C: 30, I: 10 } },
+              { label: 'Memperbaiki langsung alat atau infrastruktur fisik yang rusak dengan peralatan yang tepat.', scores: { R: 30, C: 5 } }
+            ]
+          },
+          {
+            id: 'riasec_6',
+            dimensionLabel: 'Nilai Kepuasan Diri',
+            text: 'Prestasi seperti apa yang paling membuat Anda merasa bangga?',
+            options: [
+              { label: 'Menemukan jawaban ilmiah atas permasalahan rumit yang belum terpecahkan orang lain.', scores: { I: 30, R: 5 } },
+              { label: 'Melihat karya desain, tulisan, atau seni saya menginspirasi emosi banyak orang.', scores: { A: 30, S: 10 } },
+              { label: 'Berhasil membantu seseorang tumbuh, sembuh, atau memahami pelajaran yang tadinya sulit.', scores: { S: 30, I: 5 } },
+              { label: 'Mencapai target penjualan/organisasi tertinggi dan memimpin tim memenangkan kompetisi.', scores: { E: 30, C: 10 } }
+            ]
+          },
+          {
+            id: 'riasec_7',
+            dimensionLabel: 'Keterampilan Teknis vs Manajerial',
+            text: 'Jika diberi waktu kursus intensif gratis selama 3 bulan, kelas mana yang langsung Anda ambil?',
+            options: [
+              { label: 'Akuntansi Terapan, Audit Data, & Manajemen Sistem Informasi Korporat.', scores: { C: 30, I: 5 } },
+              { label: 'Teknik Otomotif, IoT Hardware, Arsitektur Bangunan, atau Agroteknologi Modern.', scores: { R: 30, I: 5 } },
+              { label: 'Public Speaking, Kewirausahaan, & Manajemen Strategis Bisnis.', scores: { E: 30, S: 5 } },
+              { label: 'Desain Grafis, Animasi 3D, Sinematografi, & Penulisan Kreatif.', scores: { A: 30, R: 5 } }
+            ]
+          },
+          {
+            id: 'riasec_8',
+            dimensionLabel: 'Preferensi Kolaborasi Tim',
+            text: 'Dalam bekerja sama, Anda paling dikenal oleh teman-teman sebagai pribadi yang:',
+            options: [
+              { label: 'Teliti, rapi, disiplin waktu, dan sangat andal mengurus dokumen maupun angka.', scores: { C: 30, R: 5 } },
+              { label: 'Kritis, penuh rasa ingin tahu ilmiah, dan gemar membedah cara kerja suatu sistem.', scores: { I: 30, R: 10 } },
+              { label: 'Hangat, sabar, mudah berempati, dan senang membimbing orang lain.', scores: { S: 30, A: 5 } },
+              { label: 'Berani mengambil risiko, persuasif, dan punya banyak ide bisnis.', scores: { E: 30, A: 10 } }
+            ]
+          }
+        ]
+      },
+
+      // ----------------------------------------------------------------------
+      // MODUL 4: TES GAYA BELAJAR & DOMINASI OTAK (KHUSUS ANAK / REMAJA)
+      // ----------------------------------------------------------------------
+      {
+        id: 'learning',
+        title: 'Tes Gaya Belajar & Dominasi Otak (Anak & Remaja)',
+        shortTitle: 'Gaya Belajar & Dominasi Otak',
+        category: 'Edukasi Anak & Remaja',
+        ageSegments: ['anak', 'remaja'],
+        ageBadgeText: 'Anak (3–12 thn) & Remaja',
+        durationMinutes: 6,
+        hasTimer: false,
+        icon: 'fa-solid fa-palette',
+        accentColor: 'indigo',
+        badgeBg: 'bg-sky-100 text-sky-800 border-sky-200',
+        description: 'Dirancang ramah anak & remaja untuk menemukan cara belajar paling efektif (Visual, Auditori, Kinestetik) serta keseimbangan fungsi Otak Kiri & Otak Kanan.',
+        dimensionsInfo: ['Visual (Gambar & Warna)', 'Auditori (Suara & Cerita)', 'Kinestetik (Gerak & Praktik)', 'Otak Kiri (Logis-Terstruktur)', 'Otak Kanan (Kreatif-Imajinatif)'],
+        questions: [
+          {
+            id: 'learn_1',
+            dimensionLabel: 'Cara Memahami Hal Baru',
+            text: 'Saat guru atau orang tua mengajarkan permainan baru, bagaimana cara paling seru supaya kamu cepat paham?',
+            options: [
+              { label: 'Melihat gambar petunjuk yang berwarna-warni, diagram, atau menonton video caranya.', scores: { Visual: 30, OtakKanan: 15 } },
+              { label: 'Mendengarkan penjelasan cerita langkah-langkahnya sambil tanya jawab langsung.', scores: { Auditori: 30, OtakKiri: 15 } },
+              { label: 'Langsung memegang alat permainannya dan mencoba memainkannya sendiri!', scores: { Kinestetik: 30, OtakKanan: 15 } },
+              { label: 'Membaca aturan tertulisnya secara berurutan dari nomor satu sampai selesai.', scores: { Visual: 15, OtakKiri: 30 } }
+            ]
+          },
+          {
+            id: 'learn_2',
+            dimensionLabel: 'Kebiasaan Saat Belajar di Rumah',
+            text: 'Bagaimana gaya favoritmu ketika sedang menghafal atau menyiapkan materi ujian?',
+            options: [
+              { label: 'Membuat catatan penuh stabilo warna-warni, mind-map (peta konsep), dan gambar lucu.', scores: { Visual: 30, OtakKanan: 20 } },
+              { label: 'Membaca materi dengan suara lantang, bernyanyi kecil, atau berdiskusi dengan teman.', scores: { Auditori: 30, OtakKiri: 10 } },
+              { label: 'Belajar sambil berjalan-jalan kecil, menggerakkan tangan, atau menggunakan benda peraga.', scores: { Kinestetik: 30, OtakKanan: 10 } },
+              { label: 'Merangkum poin-poin rumus secara sistematis dan mengerjakan latihan soal berhitung.', scores: { Visual: 10, OtakKiri: 30 } }
+            ]
+          },
+          {
+            id: 'learn_3',
+            dimensionLabel: 'Aktivitas Waktu Luang Favorit',
+            text: 'Jika ada waktu libur akhir pekan, kegiatan mana yang paling membuatmu gembira?',
+            options: [
+              { label: 'Menggambar, mewarnai, merancang komik, atau menyusun balok bangunan warna-warni.', scores: { Visual: 30, OtakKanan: 25 } },
+              { label: 'Mendengarkan musik, bermain alat musik, bercerita (storytelling), atau podcast.', scores: { Auditori: 30, OtakKanan: 15 } },
+              { label: 'Berolahraga, menari, bersepeda, berkebun, atau membuat kerajinan tangan (prakarya).', scores: { Kinestetik: 30, OtakKanan: 15 } },
+              { label: 'Bermain catur, teka-teki silang, rubik, atau eksperimen sains sederhana.', scores: { Kinestetik: 10, OtakKiri: 30 } }
+            ]
+          },
+          {
+            id: 'learn_4',
+            dimensionLabel: 'Daya Ingat & Memori',
+            text: 'Ketika bertemu teman baru di acara liburan, hal apa yang paling mudah kamu ingat dari dirinya?',
+            options: [
+              { label: 'Wajahnya, warna pakaian yang ia kenakan, dan tempat pertama kali kami bertemu.', scores: { Visual: 30, OtakKanan: 15 } },
+              { label: 'Nama lengkapnya, nada suaranya, dan cerita seru yang ia sampaikan.', scores: { Auditori: 30, OtakKiri: 15 } },
+              { label: 'Permainan atau kegiatan seru yang kami lakukan bersama-sama saat itu.', scores: { Kinestetik: 30, OtakKanan: 15 } },
+              { label: 'Detail fakta tentang sekolahnya, kelas berapa, dan tanggal ulang tahunnya.', scores: { Auditori: 10, OtakKiri: 30 } }
+            ]
+          },
+          {
+            id: 'learn_5',
+            dimensionLabel: 'Dominasi Otak Kiri vs Otak Kanan',
+            text: 'Saat diberi tugas membuat proyek sekolah, bagian mana yang paling kamu sukai?',
+            options: [
+              { label: 'Menghias tampilan proyek dengan imajinasi bebas supaya unik dan artistik.', scores: { Visual: 20, OtakKanan: 30 } },
+              { label: 'Menyusun jadwal kerja, menghitung ukuran secara presisi, dan mengecek kerapian data.', scores: { Visual: 10, OtakKiri: 30 } },
+              { label: 'Mempresentasikan hasil proyek di depan kelas dengan gaya bicara yang seru.', scores: { Auditori: 30, OtakKiri: 15 } },
+              { label: 'Merakit dan mendemonstrasikan cara kerja alat peraga di depan teman-teman.', scores: { Kinestetik: 30, OtakKanan: 15 } }
+            ]
+          },
+          {
+            id: 'learn_6',
+            dimensionLabel: 'Respons Terhadap Cerita',
+            text: 'Saat membaca buku cerita atau menonton film petualangan, apa yang terjadi di pikiranmu?',
+            options: [
+              { label: 'Aku membayangkan pemandangan tempatnya secara jelas seolah melihat foto/lukisan.', scores: { Visual: 30, OtakKanan: 20 } },
+              { label: 'Aku sangat menikmati dialog antar tokohnya, efek suara, dan lagu temanya.', scores: { Auditori: 30, OtakKanan: 10 } },
+              { label: 'Aku ikut merasakan ketegangan gerakannya dan ingin menirukan aksi pahlawannya.', scores: { Kinestetik: 30, OtakKanan: 20 } },
+              { label: 'Aku menebak alur logika ceritanya dan mencari tahu bagaimana misterinya terpecahkan.', scores: { Visual: 10, OtakKiri: 30 } }
+            ]
+          },
+          {
+            id: 'learn_7',
+            dimensionLabel: 'Konsentrasi di Kelas',
+            text: 'Hal apa yang paling mudah mengganggu konsentrasimu saat sedang belajar?',
+            options: [
+              { label: 'Meja atau ruangan yang berantakan dan tulisan papan tulis yang kurang rapi.', scores: { Visual: 30, OtakKiri: 20 } },
+              { label: 'Suara gaduh, bisik-bisik, atau suara bising dari luar jendela kelas.', scores: { Auditori: 30, OtakKiri: 10 } },
+              { label: 'Harus duduk diam terlalu lama tanpa ada kegiatan praktik atau gerak tubuh.', scores: { Kinestetik: 30, OtakKanan: 20 } },
+              { label: 'Penjelasan yang terlalu bertele-tele tanpa contoh imajinatif yang seru.', scores: { Visual: 15, OtakKanan: 30 } }
+            ]
+          },
+          {
+            id: 'learn_8',
+            dimensionLabel: 'Ekspresi Diri',
+            text: 'Ketika kamu sedang sangat senang atau bersemangat, bagaimana kamu menunjukkannya?',
+            options: [
+              { label: 'Tersenyum lebar, mataku berbinar, dan senang menunjukkannya lewat gambar/foto.', scores: { Visual: 30, OtakKanan: 15 } },
+              { label: 'Langsung bercerita panjang lebar dengan nada suara antusias kepada orang di rumah.', scores: { Auditori: 30, OtakKiri: 15 } },
+              { label: 'Melompat kegirangan, melakukan tos (high-five), atau memeluk orang tua/teman.', scores: { Kinestetik: 30, OtakKanan: 20 } },
+              { label: 'Merencanakan target seru berikutnya yang ingin segera aku capai.', scores: { Auditori: 10, OtakKiri: 30 } }
+            ]
+          }
+        ]
+      }
+    ];
+
+    /**
+     * ========================================================================
+     * BAGIAN 3: KATALOG DESKRIPSI HASIL MBTI, RIASEC, IQ, & GAYA BELAJAR
+     * ========================================================================
+     */
+    const MBTI_PROFILES = {
+      INTJ: { title: 'The Architect (Arsitek Strategis)', desc: 'Pemikir imajinatif dan strategis dengan rencana matang untuk segala situasi. Anda unggul dalam melihat pola jangka panjang dan merancang sistem yang efisien.' },
+      INTP: { title: 'The Logician (Pemikir Analitis)', desc: 'Inovator yang haus akan pengetahuan dan teori mendalam. Anda gemar membedah logika di balik fenomena kompleks dan menemukan solusi orisinal.' },
+      ENTJ: { title: 'The Commander (Komandan Visioner)', desc: 'Pemimpin tegas, berani, dan berorientasi pada pencapaian tujuan besar. Anda selalu menemukan atau menciptakan jalan keluar di tengah tantangan.' },
+      ENTP: { title: 'The Debater (Inovator Cerdas)', desc: 'Pemikir cepat dan penuh rasa ingin tahu yang menyukai tantangan intelektual serta eksplorasi ide-ide baru yang mendobrak kebiasaan.' },
+      INFJ: { title: 'The Advocate (Penasihat Idealis)', desc: 'Tenang namun sangat inspiratif dan berprinsip kuat. Anda menggabungkan visi masa depan dengan kepedulian tulus terhadap pertumbuhan sesama.' },
+      INFP: { title: 'The Mediator (Mediator Empatik)', desc: 'Pribadi kreatif, puitis, dan altruistik yang selalu siap mendukung tujuan mulia serta menjaga keaslian nilai-nilai batin.' },
+      ENFJ: { title: 'The Protagonist (Mentor Karismatik)', desc: 'Pemimpin yang hangat dan menginspirasi, mampu memotivasi orang lain untuk berkembang dan berkolaborasi secara harmonis.' },
+      ENFP: { title: 'The Campaigner (Inspirator Antusias)', desc: 'Jiwa bebas yang kreatif, energik, dan penuh antusiasme sosial. Anda selalu mampu melihat potensi positif dalam setiap orang dan peluang.' },
+      ISTJ: { title: 'The Logistician (Perencana Andal)', desc: 'Individu yang praktis, berorientasi pada fakta, dan memiliki integritas serta keandalan tinggi dalam menuntaskan tanggung jawab.' },
+      ISFJ: { title: 'The Defender (Pelindung Setia)', desc: 'Pelindung yang sangat berdedikasi, hangat, dan teliti. Anda selalu siap menjaga stabilitas dan kesejahteraan orang-orang di sekitar Anda.' },
+      ESTJ: { title: 'The Executive (Administrator Tegas)', desc: 'Pengelola luar biasa yang piawai mengatur proyek, prosedur, dan sumber daya manusia secara terukur dan berdisiplin tinggi.' },
+      ESFJ: { title: 'The Consul (Kolaborator Hangat)', desc: 'Pribadi yang sangat peduli, sosial, dan kooperatif. Anda menciptakan suasana komunitas yang suportif dan terorganisir dengan baik.' },
+      ISTP: { title: 'The Virtuoso (Eksplorator Teknis)', desc: 'Eksperimentator praktis dan berani yang piawai menguasai berbagai peralatan teknis serta tenang dalam menyelesaikan krisis mendadak.' },
+      ISFP: { title: 'The Adventurer (Seniman Eksploratif)', desc: 'Kreator fleksibel dan menawan yang menghargai keindahan estetika serta selalu siap menjelajahi pengalaman baru secara autentik.' },
+      ESTP: { title: 'The Entrepreneur (Eksekutor Dinamis)', desc: 'Cerdas, berenergi tinggi, dan sangat tanggap terhadap peluang nyata di lapangan dengan pendekatan yang pragmatis.' },
+      ESFP: { title: 'The Entertainer (Penghibur Spontan)', desc: 'Spontan, bersemangat, dan antusias. Anda membawa keceriaan positif serta energi kolaboratif ke mana pun Anda melangkah.' }
+    };
+
+    const RIASEC_PROFILES = {
+      R: {
+        name: 'Realistic (Doers — Praktis & Teknis)',
+        desc: 'Anda menyukai aktivitas nyata yang melibatkan keterampilan teknis, rekayasa perangkat, mekanika, alam, dan hasil fisik yang terukur.',
+        majors: ['Teknik Mesin & Industri', 'Teknik Sipil & Arsitektur', 'Robotika & Otomasi', 'Agroteknologi', 'Kedokteran Hewan']
+      },
+      I: {
+        name: 'Investigative (Thinkers — Riset & Analitis)',
+        desc: 'Anda unggul dalam memecahkan masalah ilmiah, riset laboratorium, pemrograman algoritma, serta analisis data secara mendalam.',
+        majors: ['Ilmu Komputer & AI', 'Kedokteran & Biomedis', 'Sains Data & Statistika', 'Farmasi & Kimia', 'Psikologi Kognitif']
+      },
+      A: {
+        name: 'Artistic (Creators — Kreatif & Desain)',
+        desc: 'Anda memiliki imajinasi orisinal, kepekaan estetika tinggi, dan berkembang pesat dalam lingkungan yang ekspresif serta inovatif.',
+        majors: ['Desain Komunikasi Visual (DKV)', 'Desain Produk & UI/UX', 'Arsitektur Interior', 'Film & Animasi', 'Sastra & Media Kreatif']
+      },
+      S: {
+        name: 'Social (Helpers — Edukasi & Empati)',
+        desc: 'Anda memiliki kecerdasan interpersonal yang hangat, senang mengajar, membimbing, menyembuhkan, dan memberdayakan masyarakat.',
+        majors: ['Psikologi & Konseling', 'Pendidikan & Keguruan', 'Ilmu Komunikasi', 'Keperawatan & Kesehatan Masyarakat', 'Hubungan Internasional']
+      },
+      E: {
+        name: 'Enterprising (Persuaders — Bisnis & Kepemimpinan)',
+        desc: 'Anda berbakat memimpin organisasi, bernegosiasi, merancang strategi bisnis, dan mengubah gagasan menjadi gerakan bernilai ekonomi.',
+        majors: ['Manajemen Bisnis & Kewirausahaan', 'Ilmu Hukum', 'Marketing Digital', 'Hubungan Masyarakat', 'Ekonomi Pembangunan']
+      },
+      C: {
+        name: 'Conventional (Organizers — Data & Sistem)',
+        desc: 'Anda sangat terstruktur, teliti terhadap detail, dan unggul dalam mengelola sistem informasi, keuangan, serta tata kelola organisasi.',
+        majors: ['Akuntansi & Keuangan', 'Sistem Informasi Manajemen', 'Aktuaria', 'Administrasi Publik & Fiskal', 'Manajemen Logistik']
+      }
+    };
+
+    /**
+     * ========================================================================
+     * BAGIAN 4: STATE APLIKASI GLOBAL (SPA STATE MANAGEMENT)
+     * ========================================================================
+     */
+    const AppState = {
+      currentView: 'home',
+      selectedAgeFilter: 'all',
+      catalogSearchQuery: '',
+      userProfile: {
+        name: 'Sahabat MindQuest',
+        ageGroup: 'all'
+      },
+      history: [],
+      // State Kuis yang sedang berjalan
+      activeQuiz: {
+        testId: null,
+        currentIndex: 0,
+        answers: {}, // { questionIndex: optionIndex }
+        remainingSeconds: 0,
+        timerInterval: null,
+        autoNext: false,
+        startedAt: null
+      },
+      // Hasil tes yang sedang ditampilkan di Result Dashboard & Certificate Generator
+      currentResult: null,
+      confirmCallback: null
+    };
+
+    /**
+     * ========================================================================
+     * BAGIAN 5: INISIALISASI & SINKRONISASI DATA PROFIL / RIWAYAT
+     * ========================================================================
+     */
+    function initApp() {
+      // 1. Muat profil pengguna dari localStorage
+      const savedProfile = SafeStorage.get(StorageKeys.USER_PROFILE, null);
+      if (savedProfile && savedProfile.name) {
+        AppState.userProfile = savedProfile;
+      }
+
+      // 2. Muat riwayat tes dari localStorage
+      const savedHistory = SafeStorage.get(StorageKeys.TEST_HISTORY, []);
+      if (Array.isArray(savedHistory)) {
+        AppState.history = savedHistory;
+      }
+
+      // 3. Terapkan age filter default jika dipilih di profil
+      if (AppState.userProfile.ageGroup && AppState.userProfile.ageGroup !== 'all') {
+        setAgeFilter(AppState.userProfile.ageGroup, false);
+      } else {
+        setAgeFilter('all', false);
+      }
+
+      // 4. Render UI awal
+      updateHeaderProfileUI();
+      renderHomePopularTests();
+      renderCatalogTests();
+      renderHistoryView();
+      checkSavedQuizSessionBanner();
+
+      // 5. Pasang seluruh Event Listeners
+      attachEventListeners();
+    }
+
+    /**
+     * Memperbarui tampilan widget profil pengguna dan jumlah sertifikat di Header
+     */
+    function updateHeaderProfileUI() {
+      const nameEl = document.getElementById('headerUserName');
+      const ageLabelEl = document.getElementById('headerUserAgeLabel');
+      const avatarEl = document.getElementById('headerUserAvatar');
+      const certCountEl = document.getElementById('headerCertCount');
+      const navBadgeEl = document.getElementById('navHistoryCountBadge');
+      const mobileBadgeEl = document.getElementById('mobileHistoryCountBadge');
+
+      const name = AppState.userProfile.name || 'Sahabat MindQuest';
+      nameEl.textContent = name;
+
+      const ageMap = {
+        all: 'Semua Usia',
+        anak: 'Anak (3–12 thn)',
+        remaja: 'Remaja (13–18 thn)',
+        dewasa: 'Dewasa (19+ thn)'
+      };
+      ageLabelEl.textContent = ageMap[AppState.userProfile.ageGroup] || 'Semua Usia';
+
+      // Buat inisial 2 huruf untuk avatar
+      const initials = name
+        .trim()
+        .split(/\s+/)
+        .slice(0, 2)
+        .map(part => part.charAt(0).toUpperCase())
+        .join('') || 'MQ';
+      avatarEl.textContent = initials;
+
+      // Hitung jumlah sertifikat / riwayat tes yang tersimpan
+      const count = AppState.history.length;
+      certCountEl.textContent = String(count);
+      navBadgeEl.textContent = String(count);
+      mobileBadgeEl.textContent = String(count);
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 6: SISTEM NAVIGASI SPA (SINGLE PAGE APPLICATION)
+     * ========================================================================
+     */
+    function navigateToView(viewName) {
+      // Hentikan timer visual jika pengguna keluar dari layar quiz (progres tetap aman di storage)
+      if (AppState.currentView === 'quiz' && viewName !== 'quiz') {
+        stopQuizTimerInterval();
+        checkSavedQuizSessionBanner();
+      }
+
+      AppState.currentView = viewName;
+
+      // Sembunyikan semua section .spa-view lalu tampilkan yang aktif
+      const allViews = document.querySelectorAll('.spa-view');
+      allViews.forEach(sec => sec.classList.add('hidden'));
+
+      const targetSection = document.getElementById(`view-${viewName}`);
+      if (targetSection) {
+        targetSection.classList.remove('hidden');
+        // Picu ulang animasi halus
+        targetSection.classList.remove('fade-enter');
+        void targetSection.offsetWidth;
+        targetSection.classList.add('fade-enter');
+      }
+
+      // Perbarui status tombol aktif di Navbar Desktop & Mobile
+      document.querySelectorAll('.nav-tab-btn').forEach(btn => {
+        const navTarget = btn.getAttribute('data-nav');
+        if (navTarget === viewName) {
+          btn.className = 'nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 bg-white text-indigo-600 shadow-sm';
+        } else {
+          btn.className = 'nav-tab-btn px-4 py-2 rounded-lg text-sm font-semibold transition-all flex items-center gap-2 text-slate-600 hover:text-slate-900';
+        }
+      });
+
+      document.querySelectorAll('.mobile-nav-btn').forEach(btn => {
+        const navTarget = btn.getAttribute('data-nav');
+        if (navTarget === viewName) {
+          btn.className = 'mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between bg-indigo-50 text-indigo-700';
+        } else {
+          btn.className = 'mobile-nav-btn w-full px-4 py-2.5 rounded-xl text-left text-sm font-semibold flex items-center justify-between text-slate-700 hover:bg-slate-50';
+        }
+      });
+
+      // Tutup drawer mobile jika terbuka
+      const mobileDrawer = document.getElementById('mobileNavDrawer');
+      const mobileIcon = document.getElementById('mobileMenuIcon');
+      if (mobileDrawer && !mobileDrawer.classList.contains('hidden')) {
+        mobileDrawer.classList.add('hidden');
+        mobileIcon.className = 'fa-solid fa-bars text-base';
+      }
+
+      // Jika masuk ke riwayat, pastikan data terbaru dirender
+      if (viewName === 'history') {
+        renderHistoryView();
+      }
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 7: DESAIN ADAPTIF SEGMEN USIA (AGE-ADAPTIVE FEEL & FILTER)
+     * ========================================================================
+     */
+    function setAgeFilter(ageKey, showToastNotification = true) {
+      AppState.selectedAgeFilter = ageKey;
+      document.body.setAttribute('data-age-mode', ageKey);
+
+      // Sinkronkan juga dropdown di halaman Katalog
+      const catalogSelect = document.getElementById('catalogAgeSelect');
+      if (catalogSelect) catalogSelect.value = ageKey;
+
+      // Perbarui tampilan visual kartu filter usia di Beranda
+      document.querySelectorAll('.age-filter-card').forEach(card => {
+        const cardAge = card.getAttribute('data-age-filter');
+        const pill = card.querySelector('.age-active-pill');
+        if (cardAge === ageKey) {
+          card.classList.add('border-indigo-600', 'shadow-md', 'ring-2', 'ring-indigo-500/20');
+          card.classList.remove('border-slate-200/80');
+          if (pill) {
+            pill.textContent = 'Aktif Dipilih';
+            pill.className = 'age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-indigo-600 text-white';
+          }
+        } else {
+          card.classList.remove('border-indigo-600', 'shadow-md', 'ring-2', 'ring-indigo-500/20');
+          card.classList.add('border-slate-200/80');
+          if (pill) {
+            const defaultLabels = {
+              all: 'Semua',
+              anak: '3–12 Tahun',
+              remaja: '13–18 Tahun',
+              dewasa: '19+ Tahun'
+            };
+            pill.textContent = defaultLabels[cardAge] || '';
+            pill.className = 'age-active-pill px-2.5 py-1 rounded-full text-[11px] font-bold bg-slate-100 text-slate-700';
+          }
+        }
+      });
+
+      // Perbarui Banner Notice Age-Adaptive
+      const noticeBox = document.getElementById('ageAdaptiveNotice');
+      const noticeIcon = document.getElementById('ageAdaptiveNoticeIcon');
+      const noticeTitle = document.getElementById('ageAdaptiveNoticeTitle');
+      const noticeDesc = document.getElementById('ageAdaptiveNoticeDesc');
+
+      const modeConfig = {
+        all: {
+          boxClass: 'rounded-2xl p-4 bg-indigo-50/90 border border-indigo-200/80 flex flex-col sm:flex-row sm:items-center justify-between gap-3',
+          iconClass: 'w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0',
+          iconHtml: '<i class="fa-solid fa-wand-magic-sparkles"></i>',
+          title: 'Mode Eksplorasi Semua Usia Aktif',
+          desc: 'Menampilkan seluruh 4 instrumen tes populer untuk Anak, Remaja, hingga Dewasa.'
+        },
+        anak: {
+          boxClass: 'rounded-2xl p-4 bg-amber-50 border-2 border-amber-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3',
+          iconClass: 'w-10 h-10 rounded-2xl bg-amber-500 text-white flex items-center justify-center shrink-0 text-lg',
+          iconHtml: '<i class="fa-solid fa-child-reaching"></i>',
+          title: 'Mode Ramah Anak Dini (3–12 Tahun) Aktif',
+          desc: 'Tampilan membulat & cerah! Memprioritaskan Tes Gaya Belajar Visual-Auditori-Kinestetik & Dominasi Otak.'
+        },
+        remaja: {
+          boxClass: 'rounded-2xl p-4 bg-indigo-50 border-2 border-indigo-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3',
+          iconClass: 'w-10 h-10 rounded-xl bg-indigo-600 text-white flex items-center justify-center shrink-0 text-lg',
+          iconHtml: '<i class="fa-solid fa-rocket"></i>',
+          title: 'Mode Remaja Modern (13–18 Tahun) Aktif',
+          desc: 'Fokus pada Penjurusan Sekolah/Kuliah (Holland RIASEC), Gaya Belajar, Kepribadian MBTI, dan Logika.'
+        },
+        dewasa: {
+          boxClass: 'rounded-2xl p-4 bg-emerald-50/90 border border-emerald-300 flex flex-col sm:flex-row sm:items-center justify-between gap-3',
+          iconClass: 'w-10 h-10 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 text-lg',
+          iconHtml: '<i class="fa-solid fa-user-tie"></i>',
+          title: 'Mode Profesional Dewasa (19+ Tahun) Aktif',
+          desc: 'Tampilan minimalis & fokus kejelasan data untuk asesmen MBTI 16 Tipe, IQ Logika Visual, dan Karier.'
+        }
+      };
+
+      const cfg = modeConfig[ageKey] || modeConfig.all;
+      if (noticeBox) noticeBox.className = cfg.boxClass;
+      if (noticeIcon) {
+        noticeIcon.className = cfg.iconClass;
+        noticeIcon.innerHTML = cfg.iconHtml;
+      }
+      if (noticeTitle) noticeTitle.textContent = cfg.title;
+      if (noticeDesc) noticeDesc.textContent = cfg.desc;
+
+      renderHomePopularTests();
+      renderCatalogTests();
+
+      if (showToastNotification) {
+        showToast(cfg.title, 'info');
+      }
+    }
+
+    /**
+     * Merender kartu-kartu tes ke dalam elemen container yang diberikan
+     */
+    function createTestCardHTML(test, isHighlightedForAge) {
+      const totalQuestions = test.questions.length;
+      const dimensionBadges = test.dimensionsInfo
+        .slice(0, 3)
+        .map(d => `<span class="px-2.5 py-1 rounded-lg bg-slate-100 text-slate-700 text-[11px] font-medium">${d}</span>`)
+        .join('');
+
+      const timerBadge = test.hasTimer
+        ? `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-bold bg-amber-100 text-amber-800 border border-amber-300">
+             <i class="fa-regular fa-clock"></i> Timer ${test.durationMinutes} Menit
+           </span>`
+        : `<span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-semibold bg-slate-100 text-slate-600">
+             <i class="fa-regular fa-hourglass-half"></i> ~${test.durationMinutes} Menit
+           </span>`;
+
+      const recommendedRibbon = isHighlightedForAge
+        ? `<div class="mb-3 inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200 text-[11px] font-bold">
+             <i class="fa-solid fa-thumbs-up"></i> Direkomendasikan untuk Segmen Usia Ini
+           </div>`
+        : '';
+
+      return `
+        <article class="age-adaptive-card bg-white rounded-2xl p-6 border ${isHighlightedForAge ? 'border-indigo-400 shadow-md' : 'border-slate-200/90 shadow-xs'} hover:shadow-lg hover:border-indigo-400 transition-all flex flex-col justify-between">
+          <div>
+            ${recommendedRibbon}
+            <div class="flex items-start justify-between gap-4 mb-4">
+              <div class="w-13 h-13 p-3.5 rounded-2xl bg-indigo-50 text-indigo-600 flex items-center justify-center text-2xl shrink-0">
+                <i class="${test.icon}"></i>
+              </div>
+              <div class="flex flex-wrap items-center justify-end gap-1.5">
+                <span class="px-2.5 py-1 rounded-full text-[11px] font-bold border ${test.badgeBg}">${test.ageBadgeText}</span>
+                ${timerBadge}
+              </div>
+            </div>
+
+            <span class="text-[11px] font-bold uppercase tracking-wider text-indigo-600">${test.category}</span>
+            <h3 class="font-heading font-extrabold text-lg sm:text-xl text-slate-900 mt-0.5">${test.title}</h3>
+            <p class="text-xs sm:text-sm text-slate-600 mt-2 leading-relaxed">${test.description}</p>
+
+            <!-- Dimensi yang Diukur -->
+            <div class="mt-4 pt-4 border-t border-slate-100">
+              <p class="text-[11px] font-bold text-slate-400 uppercase tracking-wider mb-2">Dimensi Pengukuran (${totalQuestions} Soal Interaktif):</p>
+              <div class="flex flex-wrap gap-1.5">
+                ${dimensionBadges}
+              </div>
+            </div>
+          </div>
+
+          <div class="mt-6 pt-4 border-t border-slate-100 flex items-center justify-between gap-3">
+            <div class="text-xs text-slate-500 flex items-center gap-1.5">
+              <i class="fa-solid fa-certificate text-amber-500"></i>
+              <span>Termasuk Sertifikat Resmi</span>
+            </div>
+            <button type="button" data-start-test="${test.id}" class="start-test-btn px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm shadow-sm shadow-indigo-500/20 transition-all flex items-center gap-2">
+              <span>Mulai Tes</span>
+              <i class="fa-solid fa-play text-[11px]"></i>
+            </button>
+          </div>
+        </article>
+      `;
+    }
+
+    /**
+     * Render Grid Tes Populer di Beranda
+     */
+    function renderHomePopularTests() {
+      const grid = document.getElementById('homePopularTestsGrid');
+      if (!grid) return;
+
+      const age = AppState.selectedAgeFilter;
+      // Urutkan agar tes yang sesuai segmen usia tampil paling atas, namun tetap bisa diakses semua atau difilter
+      const filteredTests = age === 'all'
+        ? TESTS_DATABASE
+        : TESTS_DATABASE.filter(t => t.ageSegments.includes(age));
+
+      grid.innerHTML = filteredTests
+        .map(test => createTestCardHTML(test, age !== 'all' && test.ageSegments.includes(age)))
+        .join('');
+    }
+
+    /**
+     * Render Grid Katalog Lengkap dengan fitur pencarian kata kunci + filter usia
+     */
+    function renderCatalogTests() {
+      const grid = document.getElementById('catalogTestsGrid');
+      if (!grid) return;
+
+      const age = AppState.selectedAgeFilter;
+      const query = (AppState.catalogSearchQuery || '').trim().toLowerCase();
+
+      const filtered = TESTS_DATABASE.filter(test => {
+        const matchesAge = age === 'all' || test.ageSegments.includes(age);
+        const matchesQuery = !query ||
+          test.title.toLowerCase().includes(query) ||
+          test.description.toLowerCase().includes(query) ||
+          test.category.toLowerCase().includes(query);
+        return matchesAge && matchesQuery;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = `
+          <div class="col-span-full p-10 rounded-2xl bg-slate-50 border border-slate-200 text-center space-y-3">
+            <i class="fa-solid fa-magnifying-glass text-3xl text-slate-400"></i>
+            <h3 class="font-heading font-bold text-base text-slate-800">Tidak ada modul tes yang cocok dengan filter pencarian</h3>
+            <p class="text-xs text-slate-500">Coba ubah kata kunci pencarian atau pilih kategori "Semua Usia".</p>
+            <button type="button" id="resetCatalogFilterBtn" class="px-4 py-2 rounded-xl bg-indigo-600 text-white text-xs font-bold">Reset Filter</button>
+          </div>
+        `;
+        const resetBtn = document.getElementById('resetCatalogFilterBtn');
+        if (resetBtn) {
+          resetBtn.addEventListener('click', () => {
+            AppState.catalogSearchQuery = '';
+            const searchInput = document.getElementById('catalogSearchInput');
+            if (searchInput) searchInput.value = '';
+            setAgeFilter('all', false);
+          });
+        }
+        return;
+      }
+
+      grid.innerHTML = filtered
+        .map(test => createTestCardHTML(test, age !== 'all' && test.ageSegments.includes(age)))
+        .join('');
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 8: ENGINE KUIS MULTI-STEP & TIMER DINAMIS (TEST ENGINE)
+     * ========================================================================
+     */
+    function startTest(testId, resumeFromSaved = false) {
+      const testObj = TESTS_DATABASE.find(t => t.id === testId);
+      if (!testObj) return;
+
+      stopQuizTimerInterval();
+
+      if (resumeFromSaved) {
+        const savedSession = SafeStorage.get(StorageKeys.ACTIVE_SESSION, null);
+        if (savedSession && savedSession.testId === testId) {
+          AppState.activeQuiz.testId = testId;
+          AppState.activeQuiz.currentIndex = savedSession.currentIndex || 0;
+          AppState.activeQuiz.answers = savedSession.answers || {};
+          AppState.activeQuiz.remainingSeconds = savedSession.remainingSeconds || (testObj.timerSeconds || 480);
+          AppState.activeQuiz.startedAt = savedSession.startedAt || new Date().toISOString();
+        }
+      } else {
+        AppState.activeQuiz = {
+          testId: testObj.id,
+          currentIndex: 0,
+          answers: {},
+          remainingSeconds: testObj.hasTimer ? (testObj.timerSeconds || 480) : 0,
+          timerInterval: null,
+          autoNext: document.getElementById('quizAutoNextToggle')?.checked || false,
+          startedAt: new Date().toISOString()
+        };
+        saveActiveQuizSession();
+      }
+
+      // Sesuaikan nuansa visual berdasarkan segmen tes (Misal tes Gaya Belajar Anak/Remaja)
+      if (testObj.id === 'learning') {
+        document.body.setAttribute('data-age-mode', 'anak');
+      } else if (testObj.id === 'riasec') {
+        document.body.setAttribute('data-age-mode', 'remaja');
+      } else {
+        document.body.setAttribute('data-age-mode', 'dewasa');
+      }
+
+      // Set judul dan badge di header kuis
+      document.getElementById('quizCategoryBadge').textContent = testObj.category;
+      document.getElementById('quizAgeSegmentBadge').textContent = testObj.ageBadgeText;
+      document.getElementById('quizActiveTitle').textContent = testObj.title;
+
+      // Atur Timer Khusus Tes Logika/IQ
+      const timerBox = document.getElementById('quizTimerBox');
+      if (testObj.hasTimer) {
+        timerBox.classList.remove('hidden');
+        timerBox.classList.add('flex');
+        updateQuizTimerDisplay();
+        startQuizTimerInterval();
+      } else {
+        timerBox.classList.add('hidden');
+        timerBox.classList.remove('flex');
+      }
+
+      // Sembunyikan banner resume
+      document.getElementById('savedSessionBanner')?.classList.add('hidden');
+
+      navigateToView('quiz');
+      renderCurrentQuestion();
+    }
+
+    /**
+     * Memulai penghitung waktu mundur dinamis untuk Tes IQ & Logika Visual
+     */
+    function startQuizTimerInterval() {
+      stopQuizTimerInterval();
+      AppState.activeQuiz.timerInterval = setInterval(() => {
+        if (AppState.activeQuiz.remainingSeconds > 0) {
+          AppState.activeQuiz.remainingSeconds -= 1;
+          updateQuizTimerDisplay();
+          saveActiveQuizSession();
+        } else {
+          // Waktu habis: otomatis selesaikan dan hitung skor
+          stopQuizTimerInterval();
+          showToast('Waktu pengerjaan habis! Menghitung skor Anda secara otomatis...', 'warning');
+          finishQuizAndCalculateResult();
+        }
+      }, 1000);
+    }
+
+    function stopQuizTimerInterval() {
+      if (AppState.activeQuiz.timerInterval) {
+        clearInterval(AppState.activeQuiz.timerInterval);
+        AppState.activeQuiz.timerInterval = null;
+      }
+    }
+
+    function updateQuizTimerDisplay() {
+      const displayEl = document.getElementById('quizTimerDisplay');
+      const timerBox = document.getElementById('quizTimerBox');
+      if (!displayEl || !timerBox) return;
+
+      const sec = Math.max(0, AppState.activeQuiz.remainingSeconds);
+      const mins = Math.floor(sec / 60);
+      const remSec = sec % 60;
+      displayEl.textContent = `${String(mins).padStart(2, '0')}:${String(remSec).padStart(2, '0')}`;
+
+      // Ubah warna jika waktu tersisa kurang dari 60 detik
+      if (sec <= 60) {
+        timerBox.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-rose-500/30 border border-rose-400 text-rose-200 font-mono text-sm font-extrabold animate-pulse';
+      } else {
+        timerBox.className = 'flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-amber-500/20 border border-amber-400/40 text-amber-300 font-mono text-sm font-bold';
+      }
+    }
+
+    /**
+     * Menyimpan progres sesi kuis ke localStorage agar tidak hilang saat refresh
+     */
+    function saveActiveQuizSession() {
+      if (!AppState.activeQuiz.testId) return;
+      SafeStorage.set(StorageKeys.ACTIVE_SESSION, {
+        testId: AppState.activeQuiz.testId,
+        currentIndex: AppState.activeQuiz.currentIndex,
+        answers: AppState.activeQuiz.answers,
+        remainingSeconds: AppState.activeQuiz.remainingSeconds,
+        startedAt: AppState.activeQuiz.startedAt
+      });
+    }
+
+    function clearActiveQuizSession() {
+      SafeStorage.remove(StorageKeys.ACTIVE_SESSION);
+      document.getElementById('savedSessionBanner')?.classList.add('hidden');
+    }
+
+    function checkSavedQuizSessionBanner() {
+      const banner = document.getElementById('savedSessionBanner');
+      const titleEl = document.getElementById('savedSessionTestTitle');
+      if (!banner || !titleEl) return;
+
+      const saved = SafeStorage.get(StorageKeys.ACTIVE_SESSION, null);
+      if (saved && saved.testId) {
+        const testObj = TESTS_DATABASE.find(t => t.id === saved.testId);
+        if (testObj && Object.keys(saved.answers || {}).length > 0) {
+          titleEl.textContent = testObj.shortTitle;
+          banner.classList.remove('hidden');
+          return;
+        }
+      }
+      banner.classList.add('hidden');
+    }
+
+    /**
+     * Merender pertanyaan aktif beserta progress bar, nomor soal, puzzle SVG, dan kartu opsi
+     */
+    function renderCurrentQuestion() {
+      const testObj = TESTS_DATABASE.find(t => t.id === AppState.activeQuiz.testId);
+      if (!testObj) return;
+
+      const total = testObj.questions.length;
+      const idx = AppState.activeQuiz.currentIndex;
+      const question = testObj.questions[idx];
+      if (!question) return;
+
+      // 1. Update Progress Bar & Persentase
+      const progressPct = Math.round(((idx + 1) / total) * 100);
+      document.getElementById('quizProgressLabel').textContent = `Pertanyaan ${idx + 1} dari ${total}`;
+      document.getElementById('quizProgressPercent').textContent = `${progressPct}%`;
+      document.getElementById('quizProgressBarFill').style.width = `${progressPct}%`;
+
+      // 2. Render Question Navigator Pills
+      const pillsContainer = document.getElementById('quizQuestionPills');
+      pillsContainer.innerHTML = testObj.questions
+        .map((_, qIdx) => {
+          const isCurrent = qIdx === idx;
+          const isAnswered = AppState.activeQuiz.answers[qIdx] !== undefined;
+          let btnClass = 'w-7 h-7 rounded-lg text-xs font-bold transition-all shrink-0 ';
+          if (isCurrent) {
+            btnClass += 'bg-indigo-600 text-white shadow-xs ring-2 ring-indigo-300';
+          } else if (isAnswered) {
+            btnClass += 'bg-emerald-100 text-emerald-800 border border-emerald-300 hover:bg-emerald-200';
+          } else {
+            btnClass += 'bg-white text-slate-500 border border-slate-200 hover:bg-slate-100';
+          }
+          return `<button type="button" data-jump-q="${qIdx}" class="quiz-pill-btn ${btnClass}">${qIdx + 1}</button>`;
+        })
+        .join('');
+
+      // 3. Animasi transisi soal
+      const stage = document.getElementById('quizQuestionStage');
+      stage.classList.remove('fade-enter');
+      void stage.offsetWidth;
+      stage.classList.add('fade-enter');
+
+      // 4. Tampilkan label dimensi & teks pertanyaan
+      document.getElementById('quizQuestionDimensionTag').innerHTML = `
+        <i class="fa-solid fa-layer-group text-[11px]"></i>
+        <span>${question.dimensionLabel}</span>
+      `;
+      document.getElementById('quizQuestionText').textContent = question.text;
+
+      // 5. Tampilkan Ilustrasi Puzzle Visual SVG jika ada (khusus Tes IQ & Logika Visual)
+      const visualBox = document.getElementById('quizVisualPuzzleBox');
+      if (question.visualSvg) {
+        visualBox.innerHTML = question.visualSvg;
+        visualBox.classList.remove('hidden');
+      } else {
+        visualBox.innerHTML = '';
+        visualBox.classList.add('hidden');
+      }
+
+      // 6. Render Kartu Pilihan Jawaban Interaktif
+      const selectedOptionIdx = AppState.activeQuiz.answers[idx];
+      const optionsContainer = document.getElementById('quizOptionsList');
+      const optionLetters = ['A', 'B', 'C', 'D'];
+
+      optionsContainer.innerHTML = question.options
+        .map((opt, optIdx) => {
+          const isSelected = selectedOptionIdx === optIdx;
+          const cardStyle = isSelected
+            ? 'border-2 border-indigo-600 bg-indigo-50/70 shadow-sm ring-2 ring-indigo-500/15'
+            : 'border-2 border-slate-200/90 bg-white hover:border-indigo-300 hover:bg-slate-50/70';
+
+          const letterBadge = isSelected
+            ? 'bg-indigo-600 text-white border-indigo-600'
+            : 'bg-slate-100 text-slate-700 border-slate-200 group-hover:bg-indigo-100 group-hover:text-indigo-700';
+
+          const checkIndicator = isSelected
+            ? `<span class="w-6 h-6 rounded-full bg-emerald-500 text-white flex items-center justify-center text-xs shrink-0 shadow-xs">
+                 <i class="fa-solid fa-check"></i>
+               </span>`
+            : `<span class="w-6 h-6 rounded-full border-2 border-slate-300 group-hover:border-indigo-400 shrink-0"></span>`;
+
+          return `
+            <button type="button" data-option-idx="${optIdx}" class="quiz-option-card group w-full p-4 sm:p-5 rounded-2xl text-left transition-all flex items-center justify-between gap-4 ${cardStyle}">
+              <div class="flex items-center gap-3.5">
+                <span class="w-9 h-9 rounded-xl border font-heading font-extrabold text-sm flex items-center justify-center shrink-0 transition-colors ${letterBadge}">
+                  ${optionLetters[optIdx] || (optIdx + 1)}
+                </span>
+                <span class="text-sm sm:text-base font-medium ${isSelected ? 'text-indigo-950 font-semibold' : 'text-slate-800'} leading-snug">
+                  ${opt.label}
+                </span>
+              </div>
+              ${checkIndicator}
+            </button>
+          `;
+        })
+        .join('');
+
+      // 7. Update Status Tombol Sebelumnya & Selanjutnya / Selesai
+      const prevBtn = document.getElementById('quizPrevBtn');
+      const nextBtnLabel = document.getElementById('quizNextBtnLabel');
+      const nextBtnIcon = document.getElementById('quizNextBtnIcon');
+      const answeredCount = Object.keys(AppState.activeQuiz.answers).length;
+
+      prevBtn.disabled = idx === 0;
+      document.getElementById('quizAnsweredCounter').textContent = `${answeredCount} dari ${total} pertanyaan terjawab`;
+
+      if (idx === total - 1) {
+        nextBtnLabel.textContent = 'Selesaikan & Lihat Hasil';
+        nextBtnIcon.className = 'fa-solid fa-flag-checkered';
+      } else {
+        nextBtnLabel.textContent = 'Selanjutnya';
+        nextBtnIcon.className = 'fa-solid fa-arrow-right';
+      }
+    }
+
+    /**
+     * Menangani pemilihan opsi jawaban oleh pengguna
+     */
+    function selectQuizOption(optionIndex) {
+      const testObj = TESTS_DATABASE.find(t => t.id === AppState.activeQuiz.testId);
+      if (!testObj) return;
+
+      const idx = AppState.activeQuiz.currentIndex;
+      AppState.activeQuiz.answers[idx] = optionIndex;
+      saveActiveQuizSession();
+      renderCurrentQuestion();
+
+      // Jika toggle "Lanjut Otomatis" aktif dan belum di soal terakhir, maju otomatis setelah 260ms
+      const autoNext = document.getElementById('quizAutoNextToggle')?.checked;
+      if (autoNext && idx < testObj.questions.length - 1) {
+        setTimeout(() => {
+          if (AppState.currentView === 'quiz' && AppState.activeQuiz.currentIndex === idx) {
+            AppState.activeQuiz.currentIndex += 1;
+            renderCurrentQuestion();
+          }
+        }, 260);
+      }
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 9: ALGORITMA KALKULASI SKOR & ANALISIS HASIL (RESULT ENGINE)
+     * ========================================================================
+     */
+    function finishQuizAndCalculateResult() {
+      const testObj = TESTS_DATABASE.find(t => t.id === AppState.activeQuiz.testId);
+      if (!testObj) return;
+
+      stopQuizTimerInterval();
+
+      const totalQuestions = testObj.questions.length;
+      const answers = AppState.activeQuiz.answers;
+
+      // Jika masih ada soal yang belum dijawab (kecuali waktu habis), isi default opsi pertama atau beri tahu
+      let resultData = null;
+
+      if (testObj.id === 'mbti') {
+        resultData = calculateMbtiResult(testObj, answers);
+      } else if (testObj.id === 'iq') {
+        resultData = calculateIqResult(testObj, answers);
+      } else if (testObj.id === 'riasec') {
+        resultData = calculateRiasecResult(testObj, answers);
+      } else if (testObj.id === 'learning') {
+        resultData = calculateLearningResult(testObj, answers);
+      }
+
+      if (!resultData) return;
+
+      // Tambahkan metadata lengkap untuk sertifikat & riwayat
+      const now = new Date();
+      const formattedDate = now.toLocaleDateString('id-ID', {
+        day: 'numeric',
+        month: 'long',
+        year: 'numeric'
+      });
+      const serialCode = `MQ-${now.getFullYear()}-${String(Math.floor(10000 + Math.random() * 90000))}`;
+
+      AppState.currentResult = {
+        id: 'res_' + Date.now(),
+        serialNumber: serialCode,
+        testId: testObj.id,
+        testTitle: testObj.title,
+        shortTestTitle: testObj.shortTitle,
+        category: testObj.category,
+        userName: AppState.userProfile.name || 'Sahabat MindQuest',
+        dateFormatted: formattedDate,
+        timestamp: now.toISOString(),
+        savedToHistory: false,
+        ...resultData
+      };
+
+      // Hapus sesi aktif karena kuis telah selesai
+      clearActiveQuizSession();
+
+      // Render halaman hasil
+      renderResultDashboard(AppState.currentResult);
+      navigateToView('result');
+      showToast('Kalkulasi skor selesai! Lihat analisis profil Anda.', 'success');
+    }
+
+    /**
+     * 9A. Kalkulasi Skor Tes Kepribadian MBTI
+     */
+    function calculateMbtiResult(testObj, answers) {
+      const raw = { E: 10, I: 10, S: 10, N: 10, T: 10, F: 10, J: 10, P: 10 };
+
+      testObj.questions.forEach((q, qIdx) => {
+        const chosenIdx = answers[qIdx] !== undefined ? answers[qIdx] : 0;
+        const opt = q.options[chosenIdx];
+        if (opt && opt.scores) {
+          Object.entries(opt.scores).forEach(([k, val]) => {
+            raw[k] = (raw[k] || 0) + val;
+          });
+        }
+      });
+
+      const pctE = Math.round((raw.E / (raw.E + raw.I)) * 100);
+      const pctI = 100 - pctE;
+      const pctS = Math.round((raw.S / (raw.S + raw.N)) * 100);
+      const pctN = 100 - pctS;
+      const pctT = Math.round((raw.T / (raw.T + raw.F)) * 100);
+      const pctF = 100 - pctT;
+      const pctJ = Math.round((raw.J / (raw.J + raw.P)) * 100);
+      const pctP = 100 - pctJ;
+
+      const code =
+        (pctE >= pctI ? 'E' : 'I') +
+        (pctS >= pctN ? 'S' : 'N') +
+        (pctT >= pctF ? 'T' : 'F') +
+        (pctJ >= pctP ? 'J' : 'P');
+
+      const profile = MBTI_PROFILES[code] || MBTI_PROFILES.INTJ;
+
+      return {
+        badgeCode: code,
+        headline: `${code} — ${profile.title}`,
+        subheadline: `Dominasi Dimensi: ${pctE >= pctI ? `Extraversion (${pctE}%)` : `Introversion (${pctI}%)`} • ${pctS >= pctN ? `Sensing (${pctS}%)` : `Intuition (${pctN}%)`}`,
+        summary: profile.desc,
+        keyMetrics: [
+          { label: 'Tipe MBTI', value: code },
+          { label: 'Energi Utama', value: pctE >= pctI ? `Ekstrovert (${pctE}%)` : `Introvert (${pctI}%)` },
+          { label: 'Fokus Kognitif', value: pctS >= pctN ? `Sensing (${pctS}%)` : `Intuition (${pctN}%)` },
+          { label: 'Gaya Kerja', value: pctJ >= pctP ? `Judging (${pctJ}%)` : `Perceiving (${pctP}%)` }
+        ],
+        dimensions: [
+          { label: `Energi Sosial (${pctE >= pctI ? 'Extraversion' : 'Introversion'})`, percentage: Math.max(pctE, pctI), color: '#6366F1' },
+          { label: `Pemrosesan Info (${pctS >= pctN ? 'Sensing' : 'Intuition'})`, percentage: Math.max(pctS, pctN), color: '#10B981' },
+          { label: `Keputusan (${pctT >= pctF ? 'Thinking' : 'Feeling'})`, percentage: Math.max(pctT, pctF), color: '#F59E0B' },
+          { label: `Orientasi Hidup (${pctJ >= pctP ? 'Judging' : 'Perceiving'})`, percentage: Math.max(pctJ, pctP), color: '#8B5CF6' }
+        ],
+        strengths: [
+          `Konsistensi tinggi pada dimensi ${pctS >= pctN ? 'observasi faktual dan eksekusi realistis' : 'pemikiran strategis dan visi masa depan'}.`,
+          `Pengambilan keputusan yang ${pctT >= pctF ? 'objektif, rasional, dan terukur' : 'empatik, suportif, dan menghargai harmoni tim'}.`,
+          `Kemampuan adaptasi kerja secara ${pctJ >= pctP ? 'terencana, sistematis, dan tepat waktu' : 'fleksibel, kreatif, dan tanggap terhadap peluang baru'}.`
+        ],
+        growthTips: [
+          `Seimbangkan kecenderungan ${pctT >= pctF ? 'logika analitis dengan kepekaan emosional rekan kerja' : 'perasaan personal dengan ketegasan objektif saat dibutuhkan'}.`,
+          `Luangkan waktu untuk ${pctE >= pctI ? 'refleksi mandiri agar fokus mendalam tetap terjaga' : 'membangun jejaring kolaboratif secara berkala'}.`,
+          'Gunakan hasil pemetaan 4 dikotomi ini untuk memilih peran kerja yang selaras dengan energi alami Anda.'
+        ],
+        careers: ['Manajemen Strategis', 'Riset & Teknologi', 'Konsultan Psikologi / SDM', 'Pengembangan Produk', 'Komunikasi Kreatif', 'Analis Sistem']
+      };
+    }
+
+    /**
+     * 9B. Kalkulasi Skor Tes IQ & Penalaran Logika Visual
+     */
+    function calculateIqResult(testObj, answers) {
+      let correctCount = 0;
+      const dimCorrect = { numeric: 0, spatial: 0, verbal: 0 };
+      const dimTotal = { numeric: 0, spatial: 0, verbal: 0 };
+
+      testObj.questions.forEach((q, qIdx) => {
+        const chosenIdx = answers[qIdx];
+        const firstOpt = q.options[0];
+        const dimKey = firstOpt?.dim || 'numeric';
+        dimTotal[dimKey] = (dimTotal[dimKey] || 0) + 1;
+
+        if (chosenIdx !== undefined && q.options[chosenIdx] && q.options[chosenIdx].isCorrect) {
+          correctCount += 1;
+          dimCorrect[dimKey] = (dimCorrect[dimKey] || 0) + 1;
+        }
+      });
+
+      const totalQ = testObj.questions.length;
+      const accuracyPct = Math.round((correctCount / totalQ) * 100);
+
+      // Bonus kecepatan waktu tersisa (maksimal +8 poin IQ)
+      const timeRemaining = AppState.activeQuiz.remainingSeconds || 0;
+      const speedBonus = correctCount >= 4 ? Math.min(8, Math.round(timeRemaining / 60)) : 0;
+
+      // Kalibrasi Skor IQ Standar (Rentang 85 - 142)
+      const iqScore = Math.min(142, 82 + (correctCount * 5) + speedBonus);
+
+      let classification = 'Rata-Rata Atas (High Average)';
+      let percentile = 'Top 25%';
+      if (iqScore >= 130) {
+        classification = 'Sangat Superior (Gifted / Very Superior)';
+        percentile = 'Top 2%';
+      } else if (iqScore >= 120) {
+        classification = 'Superior (Penalaran Tinggi)';
+        percentile = 'Top 9%';
+      } else if (iqScore >= 110) {
+        classification = 'Di Atas Rata-Rata (High Average)';
+        percentile = 'Top 25%';
+      } else if (iqScore >= 95) {
+        classification = 'Rata-Rata Normal (Average)';
+        percentile = 'Top 50%';
+      } else {
+        classification = 'Berkembang (Developing Logic)';
+        percentile = 'Potensi Latihan Terbuka';
+      }
+
+      const numPct = Math.round(((dimCorrect.numeric || 0) / Math.max(1, dimTotal.numeric)) * 100);
+      const spaPct = Math.round(((dimCorrect.spatial || 0) / Math.max(1, dimTotal.spatial)) * 100);
+      const verPct = Math.round(((dimCorrect.verbal || 0) / Math.max(1, dimTotal.verbal)) * 100);
+      const speedPct = Math.min(100, Math.max(45, Math.round((timeRemaining / 480) * 100) + 35));
+
+      return {
+        badgeCode: `IQ ${iqScore}`,
+        headline: `Skor IQ Estimasi: ${iqScore} — ${classification}`,
+        subheadline: `Jawaban Tepat: ${correctCount}/${totalQ} (${accuracyPct}%) • Persentil Kognitif: ${percentile}`,
+        summary: `Berdasarkan ketepatan menjawab soal deret numerik, matriks pola visual SVG, dan silogisme deduktif serta efisiensi waktu pengerjaan, Anda memperoleh indeks estimasi IQ ${iqScore} (${classification}).`,
+        keyMetrics: [
+          { label: 'Indeks IQ', value: `${iqScore} Poin` },
+          { label: 'Akurasi Logika', value: `${accuracyPct}% (${correctCount}/${totalQ})` },
+          { label: 'Persentil', value: percentile },
+          { label: 'Sisa Waktu', value: `${Math.floor(timeRemaining / 60)}m ${timeRemaining % 60}d` }
+        ],
+        dimensions: [
+          { label: 'Penalaran Numerik & Deret', percentage: Math.max(25, numPct), color: '#6366F1' },
+          { label: 'Logika Spasial & Matriks Visual', percentage: Math.max(25, spaPct), color: '#10B981' },
+          { label: 'Silogisme & Deduksi Verbal', percentage: Math.max(25, verPct), color: '#F59E0B' },
+          { label: 'Efisiensi & Kecepatan Kognitif', percentage: speedPct, color: '#06B6D4' }
+        ],
+        strengths: [
+          `Kemampuan mengenali pola numerik dan hubungan aljabar dengan akurasi ${numPct}%.`,
+          `Daya abstraksi ruang dan pemetaan rotasi matriks visual sebesar ${spaPct}%.`,
+          `Penarikan kesimpulan deduktif yang terstruktur di bawah tekanan waktu.`
+        ],
+        growthTips: [
+          'Latih variasi soal matriks progresif 3×3 untuk mempertajam memori kerja visual-spasial.',
+          'Biasakan mengidentifikasi selisih bertingkat (deret aritmetika & geometri tingkat dua) secara cepat.',
+          'Pertahankan ketenangan manajemen waktu saat menghadapi soal silogisme panjang.'
+        ],
+        careers: ['Sains Data & AI', 'Rekayasa Perangkat Lunak', 'Riset Kuantitatif & Aktuaria', 'Arsitektur Sistem', 'Analis Keuangan & Strategi', 'Riset Akademik']
+      };
+    }
+
+    /**
+     * 9C. Kalkulasi Skor Tes Minat Bakat Holland Code (RIASEC)
+     */
+    function calculateRiasecResult(testObj, answers) {
+      const scores = { R: 15, I: 15, A: 15, S: 15, E: 15, C: 15 };
+
+      testObj.questions.forEach((q, qIdx) => {
+        const chosenIdx = answers[qIdx] !== undefined ? answers[qIdx] : 0;
+        const opt = q.options[chosenIdx];
+        if (opt && opt.scores) {
+          Object.entries(opt.scores).forEach(([k, val]) => {
+            scores[k] = (scores[k] || 0) + val;
+          });
+        }
+      });
+
+      const maxPossible = 140;
+      const sortedKeys = Object.keys(scores).sort((a, b) => scores[b] - scores[a]);
+      const top1 = sortedKeys[0];
+      const top2 = sortedKeys[1];
+      const top3 = sortedKeys[2];
+      const hollandCode = `${top1}${top2}${top3}`;
+
+      const p1 = RIASEC_PROFILES[top1];
+      const p2 = RIASEC_PROFILES[top2];
+
+      const pct = key => Math.min(98, Math.max(30, Math.round((scores[key] / maxPossible) * 100)));
+
+      return {
+        badgeCode: `RIASEC: ${hollandCode}`,
+        headline: `Tipe Dominan: ${p1.name}`,
+        subheadline: `Kode Tiga Huruf Holland: ${hollandCode} (${top1} - ${top2} - ${top3})`,
+        summary: `${p1.desc} Kombinasi sekunder Anda pada dimensi ${p2.name} menjadikan Anda sangat potensial untuk berkembang di bidang yang memadukan kedua kekuatan tersebut.`,
+        keyMetrics: [
+          { label: 'Holland Code', value: hollandCode },
+          { label: 'Dominan #1', value: `${top1} (${pct(top1)}%)` },
+          { label: 'Dominan #2', value: `${top2} (${pct(top2)}%)` },
+          { label: 'Dominan #3', value: `${top3} (${pct(top3)}%)` }
+        ],
+        dimensions: [
+          { label: 'Realistic (Praktis & Teknis)', percentage: pct('R'), color: '#10B981' },
+          { label: 'Investigative (Riset & Sains)', percentage: pct('I'), color: '#6366F1' },
+          { label: 'Artistic (Kreatif & Desain)', percentage: pct('A'), color: '#EC4899' },
+          { label: 'Social (Edukasi & Empati)', percentage: pct('S'), color: '#F59E0B' },
+          { label: 'Enterprising (Bisnis & Kepemimpinan)', percentage: pct('E'), color: '#8B5CF6' },
+          { label: 'Conventional (Data & Manajerial)', percentage: pct('C'), color: '#06B6D4' }
+        ],
+        strengths: [
+          `Minat alami yang kuat pada bidang ${p1.name}.`,
+          `Dukungan bakat sekunder pada ranah ${p2.name}.`,
+          'Memiliki arah preferensi karier dan penjurusan studi yang jelas serta terukur.'
+        ],
+        growthTips: [
+          'Ikuti proyek ekstrakurikuler, magang, atau portofolio yang menggabungkan dua dimensi teratas Anda.',
+          'Diskusikan rekomendasi jurusan di samping bersama orang tua atau konselor akademik.',
+          'Bangun keterampilan lintas disiplin untuk memperluas daya saing karier masa depan.'
+        ],
+        careers: [...p1.majors.slice(0, 3), ...p2.majors.slice(0, 3)]
+      };
+    }
+
+    /**
+     * 9D. Kalkulasi Skor Tes Gaya Belajar & Dominasi Otak (Anak & Remaja)
+     */
+    function calculateLearningResult(testObj, answers) {
+      const scores = { Visual: 15, Auditori: 15, Kinestetik: 15, OtakKiri: 20, OtakKanan: 20 };
+
+      testObj.questions.forEach((q, qIdx) => {
+        const chosenIdx = answers[qIdx] !== undefined ? answers[qIdx] : 0;
+        const opt = q.options[chosenIdx];
+        if (opt && opt.scores) {
+          Object.entries(opt.scores).forEach(([k, val]) => {
+            scores[k] = (scores[k] || 0) + val;
+          });
+        }
+      });
+
+      const vakTotal = scores.Visual + scores.Auditori + scores.Kinestetik;
+      const pctV = Math.round((scores.Visual / vakTotal) * 100);
+      const pctA = Math.round((scores.Auditori / vakTotal) * 100);
+      const pctK = Math.max(10, 100 - pctV - pctA);
+
+      const brainTotal = scores.OtakKiri + scores.OtakKanan;
+      const pctLeft = Math.round((scores.OtakKiri / brainTotal) * 100);
+      const pctRight = 100 - pctLeft;
+
+      const vakSorted = [
+        { name: 'Visual', pct: pctV },
+        { name: 'Auditori', pct: pctA },
+        { name: 'Kinestetik', pct: pctK }
+      ].sort((a, b) => b.pct - a.pct);
+
+      const topStyle = vakSorted[0].name;
+      const brainDominance = pctRight >= pctLeft ? `Otak Kanan Kreatif (${pctRight}%)` : `Otak Kiri Logis (${pctLeft}%)`;
+
+      const styleDescriptions = {
+        Visual: 'Kamu paling cepat menyerap ilmu melalui gambar, warna, diagram, peta konsep (mind-map), dan demonstrasi visual yang rapi!',
+        Auditori: 'Kamu sangat peka menangkap penjelasan lisan, diskusi interaktif, cerita, irama musik, dan mengulang materi dengan suara!',
+        Kinestetik: 'Kamu belajar paling optimal melalui praktik langsung, eksperimen fisik, gerakan aktif, dan menyentuh alat peraga!'
+      };
+
+      return {
+        badgeCode: `${topStyle.toUpperCase()}`,
+        headline: `Gaya Belajar ${topStyle} & Dominasi ${pctRight >= pctLeft ? 'Otak Kanan' : 'Otak Kiri'}`,
+        subheadline: `Distribusi VAK: Visual ${pctV}% • Auditori ${pctA}% • Kinestetik ${pctK}%`,
+        summary: `${styleDescriptions[topStyle]} Selain itu, profil kecenderungan ${brainDominance} menunjukkan cara unik otakmu memproses ide dan menyelesaikan tantangan belajar.`,
+        keyMetrics: [
+          { label: 'Gaya Utama', value: `${topStyle} (${vakSorted[0].pct}%)` },
+          { label: 'Dominasi Otak', value: pctRight >= pctLeft ? `Kanan (${pctRight}%)` : `Kiri (${pctLeft}%)` },
+          { label: 'Gaya Kedua', value: `${vakSorted[1].name} (${vakSorted[1].pct}%)` },
+          { label: 'Keseimbangan', value: Math.abs(pctLeft - pctRight) <= 14 ? 'Otak Seimbang' : 'Spesialis' }
+        ],
+        dimensions: [
+          { label: 'Gaya Belajar Visual (Gambar & Warna)', percentage: Math.min(96, pctV + 25), color: '#6366F1' },
+          { label: 'Gaya Belajar Auditori (Suara & Diskusi)', percentage: Math.min(96, pctA + 25), color: '#F59E0B' },
+          { label: 'Gaya Belajar Kinestetik (Praktik & Gerak)', percentage: Math.min(96, pctK + 25), color: '#10B981' },
+          { label: 'Dominasi Otak Kiri (Logis & Terstruktur)', percentage: pctLeft, color: '#06B6D4' },
+          { label: 'Dominasi Otak Kanan (Kreatif & Imajinatif)', percentage: pctRight, color: '#EC4899' }
+        ],
+        strengths: [
+          `Daya serap tinggi ketika materi disajikan dengan metode ${topStyle}.`,
+          `Kekuatan berpikir ${pctRight >= pctLeft ? 'imajinatif, visual, dan kaya ide kreatif' : 'runut, analitis, dan terorganisir dengan rapi'}.`,
+          'Mudah termotivasi saat suasana belajar sesuai dengan ritme alaminya.'
+        ],
+        growthTips: [
+          topStyle === 'Visual'
+            ? 'Gunakan spidol warna-warni, flashcard bergambar, dan video animasi saat belajar.'
+            : topStyle === 'Auditori'
+            ? 'Rekam ringkasan materi atau jelaskan kembali pelajaran dengan suara lantang kepada orang tua/teman.'
+            : 'Selingi waktu belajar dengan eksperimen praktik, permainan peran, atau istirahat gerak setiap 25 menit.',
+          'Padukan catatan terstruktur (Otak Kiri) dengan ilustrasi kreatif (Otak Kanan) agar daya ingat jangka panjang makin kuat.'
+        ],
+        careers: ['Sains & Eksperimen Kreatif', 'Desain & Multimedia', 'Komunikasi & Storytelling', 'Teknologi & Robotika Anak', 'Seni Pertunjukan & Olahraga']
+      };
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 10: RENDER HALAMAN HASIL & GRAFIK CANVAS (RESULT DASHBOARD)
+     * ========================================================================
+     */
+    function renderResultDashboard(result) {
+      if (!result) return;
+
+      document.getElementById('resultTestTitleBadge').textContent = result.shortTestTitle;
+      document.getElementById('resultDateBadge').textContent = result.dateFormatted;
+      document.getElementById('resultHeadlineBadge').textContent = result.headline;
+      document.getElementById('resultSubheadline').textContent = result.subheadline;
+      document.getElementById('resultSummaryParagraph').textContent = result.summary;
+      document.getElementById('resultUserNameDisplay').textContent = result.userName;
+      document.getElementById('resultCodeBadge').textContent = result.badgeCode;
+
+      // Status tombol Simpan ke Riwayat
+      const saveBtn = document.getElementById('resultSaveHistoryBtn');
+      const saveBtnText = document.getElementById('resultSaveHistoryBtnText');
+      if (result.savedToHistory) {
+        saveBtnText.textContent = 'Tersimpan di Riwayat';
+        saveBtn.className = 'px-5 py-3 rounded-xl bg-slate-700 text-emerald-300 font-bold text-xs sm:text-sm border border-emerald-500/30 flex items-center gap-2 cursor-default';
+      } else {
+        saveBtnText.textContent = 'Simpan Hasil ke Riwayat';
+        saveBtn.className = 'px-5 py-3 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-bold text-xs sm:text-sm shadow-lg shadow-emerald-600/20 transition-all flex items-center gap-2';
+      }
+
+      // Render Key Metrics Grid
+      const metricsGrid = document.getElementById('resultKeyMetricsGrid');
+      metricsGrid.innerHTML = (result.keyMetrics || [])
+        .map(m => `
+          <div class="p-3 rounded-xl bg-white/5 border border-white/10">
+            <p class="text-[10px] uppercase tracking-wider text-slate-300">${m.label}</p>
+            <p class="font-heading font-bold text-sm text-white mt-0.5 truncate">${m.value}</p>
+          </div>
+        `)
+        .join('');
+
+      // Render CSS Progress Bars Distribusi Dimensi
+      const barsList = document.getElementById('resultDimensionBarsList');
+      barsList.innerHTML = (result.dimensions || [])
+        .map(dim => `
+          <div class="space-y-1.5">
+            <div class="flex items-center justify-between text-xs sm:text-sm">
+              <span class="font-semibold text-slate-700">${dim.label}</span>
+              <span class="font-extrabold text-slate-900">${dim.percentage}%</span>
+            </div>
+            <div class="w-full h-3 bg-slate-100 rounded-full overflow-hidden border border-slate-200/60">
+              <div class="h-full rounded-full transition-all duration-700" style="width: ${dim.percentage}%; background-color: ${dim.color};"></div>
+            </div>
+          </div>
+        `)
+        .join('');
+
+      // Render Kekuatan, Saran Pengembangan, dan Karier
+      document.getElementById('resultStrengthsList').innerHTML = (result.strengths || [])
+        .map(item => `<li class="flex items-start gap-2"><i class="fa-solid fa-circle-check text-emerald-500 mt-1 shrink-0"></i><span>${item}</span></li>`)
+        .join('');
+
+      document.getElementById('resultGrowthList').innerHTML = (result.growthTips || [])
+        .map(item => `<li class="flex items-start gap-2"><i class="fa-solid fa-arrow-trend-up text-indigo-500 mt-1 shrink-0"></i><span>${item}</span></li>`)
+        .join('');
+
+      document.getElementById('resultCareerPills').innerHTML = (result.careers || [])
+        .map(c => `<span class="px-3 py-1.5 rounded-xl bg-amber-50 text-amber-900 border border-amber-200/80 text-xs font-semibold">${c}</span>`)
+        .join('');
+
+      // Gambar Diagram Radar / Polar Visual pada Canvas
+      drawResultRadarChart(result.dimensions || []);
+    }
+
+    /**
+     * Menggambar Diagram Radar / Spider Visual menggunakan HTML5 Canvas 2D
+     */
+    function drawResultRadarChart(dimensions) {
+      const canvas = document.getElementById('resultRadarCanvas');
+      if (!canvas || !dimensions.length) return;
+      const ctx = canvas.getContext('2d');
+      const w = canvas.width;
+      const h = canvas.height;
+      ctx.clearRect(0, 0, w, h);
+
+      const cx = w / 2;
+      const cy = h / 2 + 4;
+      const radius = Math.min(w, h) * 0.34;
+      const count = dimensions.length;
+
+      // 1. Gambar Jaring Poligon Konsentris (25%, 50%, 75%, 100%)
+      const levels = [0.25, 0.5, 0.75, 1.0];
+      levels.forEach(lvl => {
+        ctx.beginPath();
+        for (let i = 0; i < count; i++) {
+          const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+          const x = cx + Math.cos(angle) * radius * lvl;
+          const y = cy + Math.sin(angle) * radius * lvl;
+          if (i === 0) ctx.moveTo(x, y);
+          else ctx.lineTo(x, y);
+        }
+        ctx.closePath();
+        ctx.strokeStyle = '#E2E8F0';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+      });
+
+      // 2. Gambar Garis Sumbu & Label Singkat
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+        const x = cx + Math.cos(angle) * radius;
+        const y = cy + Math.sin(angle) * radius;
+
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(x, y);
+        ctx.strokeStyle = '#CBD5E1';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        // Tulis label di luar lingkaran
+        const lx = cx + Math.cos(angle) * (radius + 26);
+        const ly = cy + Math.sin(angle) * (radius + 20);
+        const shortLabel = dimensions[i].label.split('(')[0].trim().slice(0, 16);
+
+        ctx.fillStyle = '#334155';
+        ctx.font = 'bold 10px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+        ctx.fillText(`${shortLabel} (${dimensions[i].percentage}%)`, lx, ly);
+      }
+
+      // 3. Gambar Poligon Data Skor Pengguna
+      ctx.beginPath();
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+        const valRatio = Math.min(1, Math.max(0.1, dimensions[i].percentage / 100));
+        const x = cx + Math.cos(angle) * radius * valRatio;
+        const y = cy + Math.sin(angle) * radius * valRatio;
+        if (i === 0) ctx.moveTo(x, y);
+        else ctx.lineTo(x, y);
+      }
+      ctx.closePath();
+      ctx.fillStyle = 'rgba(99, 102, 241, 0.24)';
+      ctx.fill();
+      ctx.strokeStyle = '#6366F1';
+      ctx.lineWidth = 2.5;
+      ctx.stroke();
+
+      // 4. Gambar Titik Sudut Data
+      for (let i = 0; i < count; i++) {
+        const angle = (Math.PI * 2 * i) / count - Math.PI / 2;
+        const valRatio = Math.min(1, Math.max(0.1, dimensions[i].percentage / 100));
+        const x = cx + Math.cos(angle) * radius * valRatio;
+        const y = cy + Math.sin(angle) * radius * valRatio;
+
+        ctx.beginPath();
+        ctx.arc(x, y, 4.5, 0, Math.PI * 2);
+        ctx.fillStyle = '#10B981';
+        ctx.fill();
+        ctx.strokeStyle = '#FFFFFF';
+        ctx.lineWidth = 1.5;
+        ctx.stroke();
+      }
+    }
+
+    /**
+     * Menyimpan hasil tes saat ini ke dalam localStorage (Riwayat Tes)
+     */
+    function saveCurrentResultToHistory() {
+      if (!AppState.currentResult) return;
+
+      const alreadyExists = AppState.history.some(item => item.id === AppState.currentResult.id);
+      if (alreadyExists) {
+        showToast('Hasil tes ini sudah tersimpan di Riwayat Anda.', 'info');
+        return;
+      }
+
+      AppState.currentResult.savedToHistory = true;
+      AppState.history.unshift({ ...AppState.currentResult });
+      SafeStorage.set(StorageKeys.TEST_HISTORY, AppState.history);
+
+      updateHeaderProfileUI();
+      renderResultDashboard(AppState.currentResult);
+      showToast('Hasil tes & sertifikat berhasil disimpan ke Riwayat!', 'success');
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 11: GENERATOR SERTIFIKAT OTOMATIS (HTML5 CANVAS RESOLUSI TINGGI)
+     * Menghasilkan sertifikat elegan dengan border emas/indigo, logo MindQuest,
+     * nama dinamis, skor/kategori hasil, tanggal, segel emas, & tanda tangan.
+     * ========================================================================
+     */
+    function openCertificateModal(resultObj) {
+      const targetResult = resultObj || AppState.currentResult;
+      if (!targetResult) return;
+
+      AppState.currentResult = targetResult;
+
+      // Otomatis simpan ke riwayat saat pengguna mencetak/membuka sertifikat agar koleksi sertifikat bertambah
+      if (!targetResult.savedToHistory) {
+        saveCurrentResultToHistory();
+      }
+
+      const nameInput = document.getElementById('certRecipientNameInput');
+      if (nameInput) {
+        nameInput.value = targetResult.userName || AppState.userProfile.name || 'Sahabat MindQuest';
+      }
+
+      const modal = document.getElementById('certificateModal');
+      modal.classList.remove('hidden');
+
+      renderCertificateCanvas(targetResult);
+    }
+
+    function renderCertificateCanvas(result) {
+      const canvas = document.getElementById('certificateCanvas');
+      if (!canvas || !result) return;
+      const ctx = canvas.getContext('2d');
+      const W = canvas.width;  // 1600
+      const H = canvas.height; // 1130
+
+      // 1. Latar Belakang Kertas Sertifikat Mewah
+      const bgGrad = ctx.createLinearGradient(0, 0, W, H);
+      bgGrad.addColorStop(0, '#FFFFFF');
+      bgGrad.addColorStop(0.5, '#F8FAFC');
+      bgGrad.addColorStop(1, '#EEF2FF');
+      ctx.fillStyle = bgGrad;
+      ctx.fillRect(0, 0, W, H);
+
+      // Pola Watermark Lingkaran Geometris Halus di Tengah
+      ctx.save();
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.05)';
+      ctx.lineWidth = 2;
+      for (let r = 140; r <= 440; r += 60) {
+        ctx.beginPath();
+        ctx.arc(W / 2, H / 2, r, 0, Math.PI * 2);
+        ctx.stroke();
+      }
+      ctx.restore();
+
+      // 2. Bingkai Luar Indigo Navy & Bingkai Dalam Emas (Amber/Gold)
+      ctx.strokeStyle = '#1E1B4B';
+      ctx.lineWidth = 18;
+      ctx.strokeRect(36, 36, W - 72, H - 72);
+
+      const goldGrad = ctx.createLinearGradient(0, 0, W, H);
+      goldGrad.addColorStop(0, '#D97706');
+      goldGrad.addColorStop(0.5, '#F59E0B');
+      goldGrad.addColorStop(1, '#B45309');
+      ctx.strokeStyle = goldGrad;
+      ctx.lineWidth = 5;
+      ctx.strokeRect(62, 62, W - 124, H - 124);
+
+      ctx.strokeStyle = 'rgba(99, 102, 241, 0.35)';
+      ctx.lineWidth = 2;
+      ctx.strokeRect(76, 76, W - 152, H - 152);
+
+      // Ornamen Sudut Emas Mewah di Keempat Pojok
+      const corners = [
+        [62, 62, 1, 1],
+        [W - 62, 62, -1, 1],
+        [62, H - 62, 1, -1],
+        [W - 62, H - 62, -1, -1]
+      ];
+      corners.forEach(([cx, cy, dx, dy]) => {
+        ctx.save();
+        ctx.fillStyle = '#F59E0B';
+        ctx.beginPath();
+        ctx.moveTo(cx, cy);
+        ctx.lineTo(cx + dx * 65, cy);
+        ctx.lineTo(cx, cy + dy * 65);
+        ctx.closePath();
+        ctx.fill();
+        ctx.restore();
+      });
+
+      // 3. Header Logo "MindQuest" & Institusi
+      ctx.save();
+      // Badge Logo Indigo di tengah atas
+      ctx.fillStyle = '#4F46E5';
+      ctx.beginPath();
+      ctx.roundRect(W / 2 - 155, 118, 310, 54, 27);
+      ctx.fill();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '800 24px "Plus Jakarta Sans", Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('MINDQUEST ID', W / 2, 153);
+
+      ctx.fillStyle = '#64748B';
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillText('PSYCHOLOGICAL, COGNITIVE & EDUCATIONAL ASSESSMENT CENTER', W / 2, 205);
+
+      // 4. Judul Utama "SERTIFIKAT HASIL TES"
+      ctx.fillStyle = '#0F172A';
+      ctx.font = '800 54px "Plus Jakarta Sans", Inter, sans-serif';
+      ctx.fillText('SERTIFIKAT HASIL TES', W / 2, 278);
+
+      // Garis Dekoratif Emas di bawah Judul
+      ctx.strokeStyle = '#F59E0B';
+      ctx.lineWidth = 4;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 180, 302);
+      ctx.lineTo(W / 2 + 180, 302);
+      ctx.stroke();
+
+      // Nomor Seri Sertifikat
+      ctx.fillStyle = '#4F46E5';
+      ctx.font = '600 17px Inter, sans-serif';
+      ctx.fillText(`Nomor Sertifikat Resmi: ${result.serialNumber}`, W / 2, 336);
+
+      // 5. Kalimat Pengantar & Nama Lengkap Peserta
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 22px Inter, sans-serif';
+      ctx.fillText('Diberikan dengan bangga kepada:', W / 2, 395);
+
+      const recipientName = (result.userName || 'Sahabat MindQuest').toUpperCase();
+      ctx.fillStyle = '#1E1B4B';
+      ctx.font = '800 52px "Plus Jakarta Sans", Inter, sans-serif';
+      ctx.fillText(recipientName, W / 2, 465);
+
+      // Garis bawah nama peserta
+      ctx.strokeStyle = '#CBD5E1';
+      ctx.lineWidth = 2;
+      ctx.beginPath();
+      ctx.moveTo(W / 2 - 340, 488);
+      ctx.lineTo(W / 2 + 340, 488);
+      ctx.stroke();
+
+      // 6. Nama Jenis Tes & Kategori/Skor Hasil
+      ctx.fillStyle = '#475569';
+      ctx.font = '500 22px Inter, sans-serif';
+      ctx.fillText('Telah menyelesaikan instrumen asesmen psikologi & edukasi interaktif:', W / 2, 540);
+
+      ctx.fillStyle = '#4F46E5';
+      ctx.font = '800 32px "Plus Jakarta Sans", Inter, sans-serif';
+      ctx.fillText(result.testTitle, W / 2, 588);
+
+      // Kotak Hasil / Klasifikasi Utama
+      ctx.fillStyle = '#F8FAFC';
+      ctx.strokeStyle = '#6366F1';
+      ctx.lineWidth = 2.5;
+      ctx.beginPath();
+      ctx.roundRect(W / 2 - 470, 618, 940, 118, 20);
+      ctx.fill();
+      ctx.stroke();
+
+      ctx.fillStyle = '#0F172A';
+      ctx.font = '800 30px "Plus Jakarta Sans", Inter, sans-serif';
+      ctx.fillText(result.headline, W / 2, 666);
+
+      ctx.fillStyle = '#059669';
+      ctx.font = '700 20px Inter, sans-serif';
+      ctx.fillText(result.subheadline, W / 2, 706);
+
+      // 7. Ringkasan Bar Skor Dimensi pada Sertifikat
+      const dims = (result.dimensions || []).slice(0, 4);
+      const pillWidth = 210;
+      const gap = 22;
+      const totalRowWidth = dims.length * pillWidth + (dims.length - 1) * gap;
+      let startX = (W - totalRowWidth) / 2;
+
+      dims.forEach(d => {
+        ctx.fillStyle = '#EEF2FF';
+        ctx.beginPath();
+        ctx.roundRect(startX, 760, pillWidth, 68, 12);
+        ctx.fill();
+
+        const shortName = d.label.split('(')[0].trim().slice(0, 18);
+        ctx.fillStyle = '#475569';
+        ctx.font = '600 14px Inter, sans-serif';
+        ctx.fillText(shortName, startX + pillWidth / 2, 786);
+
+        ctx.fillStyle = '#1E1B4B';
+        ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+        ctx.fillText(`${d.percentage}%`, startX + pillWidth / 2, 814);
+
+        startX += pillWidth + gap;
+      });
+
+      // 8. Footer Sertifikat: Tanggal, Segel Emas (Gold Seal), & Tanda Tangan Digital
+      const footerY = 935;
+
+      // Kiri: Tanggal Penerbitan
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillText('Tanggal Asesmen Resmi', 310, footerY - 35);
+      ctx.fillStyle = '#0F172A';
+      ctx.font = '800 22px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText(result.dateFormatted, 310, footerY + 2);
+      ctx.strokeStyle = '#94A3B8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(190, footerY + 20);
+      ctx.lineTo(430, footerY + 20);
+      ctx.stroke();
+      ctx.fillStyle = '#64748B';
+      ctx.font = '500 15px Inter, sans-serif';
+      ctx.fillText('Terverifikasi Secara Digital', 310, footerY + 46);
+
+      // Tengah: Cap / Segel Emas (Official Gold Seal)
+      const sealX = W / 2;
+      const sealY = footerY - 5;
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 64, 0, Math.PI * 2);
+      ctx.fillStyle = '#F59E0B';
+      ctx.fill();
+      ctx.lineWidth = 4;
+      ctx.strokeStyle = '#B45309';
+      ctx.stroke();
+
+      ctx.beginPath();
+      ctx.arc(sealX, sealY, 52, 0, Math.PI * 2);
+      ctx.strokeStyle = '#FEF3C7';
+      ctx.lineWidth = 2;
+      ctx.stroke();
+
+      ctx.fillStyle = '#FFFFFF';
+      ctx.font = '800 15px "Plus Jakarta Sans", sans-serif';
+      ctx.fillText('OFFICIAL SEAL', sealX, sealY - 8);
+      ctx.font = '700 13px Inter, sans-serif';
+      ctx.fillText('MINDQUEST', sealX, sealY + 12);
+      ctx.fillText('VERIFIED', sealX, sealY + 28);
+
+      // Kanan: Tanda Tangan Digital Dekoratif
+      const sigX = W - 310;
+      ctx.fillStyle = '#475569';
+      ctx.font = '600 18px Inter, sans-serif';
+      ctx.fillText('Direktur Asesmen & Edukasi', sigX, footerY - 35);
+
+      // Goresan tanda tangan kaligrafi vektor
+      ctx.save();
+      ctx.strokeStyle = '#312E81';
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      ctx.moveTo(sigX - 85, footerY + 2);
+      ctx.bezierCurveTo(sigX - 45, footerY - 32, sigX - 10, footerY + 18, sigX + 25, footerY - 14);
+      ctx.bezierCurveTo(sigX + 50, footerY - 30, sigX + 65, footerY + 8, sigX + 90, footerY - 6);
+      ctx.stroke();
+      ctx.restore();
+
+      ctx.strokeStyle = '#94A3B8';
+      ctx.lineWidth = 1.5;
+      ctx.beginPath();
+      ctx.moveTo(sigX - 120, footerY + 20);
+      ctx.lineTo(sigX + 120, footerY + 20);
+      ctx.stroke();
+
+      ctx.fillStyle = '#0F172A';
+      ctx.font = '700 16px Inter, sans-serif';
+      ctx.fillText('Dr. Hendra Wijaya, M.Psi., Psikolog', sigX, footerY + 46);
+
+      ctx.restore();
+    }
+
+    /**
+     * Mengunduh Canvas Sertifikat menjadi file gambar .PNG secara langsung
+     */
+    function downloadCertificateAsPng() {
+      const canvas = document.getElementById('certificateCanvas');
+      if (!canvas || !AppState.currentResult) return;
+
+      const cleanName = (AppState.currentResult.userName || 'Peserta')
+        .replace(/[^a-zA-Z0-9_-]/g, '-')
+        .replace(/-+/g, '-');
+
+      const dataUrl = canvas.toDataURL('image/png');
+      const link = document.createElement('a');
+      link.download = `Sertifikat-MindQuest-${AppState.currentResult.testId.toUpperCase()}-${cleanName}.png`;
+      link.href = dataUrl;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+
+      showToast('Sertifikat (.PNG) berhasil diunduh ke perangkat Anda!', 'success');
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 12: RENDER HALAMAN RIWAYAT TES (HISTORY VIEW)
+     * ========================================================================
+     */
+    function renderHistoryView() {
+      const container = document.getElementById('historyItemsContainer');
+      const statTotal = document.getElementById('historyStatTotal');
+      const statCerts = document.getElementById('historyStatCerts');
+      const statLatest = document.getElementById('historyStatLatestBadge');
+      if (!container) return;
+
+      const list = AppState.history || [];
+      statTotal.textContent = `${list.length} Tes`;
+      statCerts.textContent = `${list.length} Sertifikat`;
+      statLatest.textContent = list.length > 0 ? list[0].badgeCode : 'Belum Ada';
+
+      if (list.length === 0) {
+        container.innerHTML = `
+          <div class="p-10 rounded-3xl bg-slate-50 border border-dashed border-slate-300 text-center space-y-4">
+            <div class="w-16 h-16 rounded-2xl bg-indigo-50 text-indigo-500 flex items-center justify-center text-2xl mx-auto">
+              <i class="fa-solid fa-folder-open"></i>
+            </div>
+            <div class="max-w-md mx-auto space-y-1">
+              <h3 class="font-heading font-bold text-lg text-slate-900">Belum Ada Riwayat Tes Tersimpan</h3>
+              <p class="text-xs sm:text-sm text-slate-500">Selesaikan salah satu modul tes (MBTI, IQ Logika Visual, RIASEC, atau Gaya Belajar) untuk menyimpan hasil dan mencetak sertifikat resmi.</p>
+            </div>
+            <button type="button" id="emptyHistoryStartBtn" class="px-5 py-2.5 rounded-xl bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs sm:text-sm transition-colors">
+              Mulai Tes Pertama Anda
+            </button>
+          </div>
+        `;
+        document.getElementById('emptyHistoryStartBtn')?.addEventListener('click', () => navigateToView('catalog'));
+        return;
+      }
+
+      container.innerHTML = list
+        .map((item, idx) => `
+          <div class="p-5 sm:p-6 rounded-2xl bg-slate-50/80 hover:bg-white border border-slate-200/90 hover:border-indigo-300 transition-all flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-2xs">
+            <div class="space-y-1.5">
+              <div class="flex flex-wrap items-center gap-2">
+                <span class="px-2.5 py-0.5 rounded-md bg-indigo-600 text-white text-xs font-extrabold">${item.badgeCode}</span>
+                <span class="text-xs font-bold text-indigo-700">${item.testTitle}</span>
+                <span class="text-xs text-slate-400">•</span>
+                <span class="text-xs text-slate-500"><i class="fa-regular fa-calendar mr-1"></i>${item.dateFormatted}</span>
+                <span class="text-[11px] font-mono text-slate-400">(${item.serialNumber})</span>
+              </div>
+              <h3 class="font-heading font-bold text-base sm:text-lg text-slate-900">${item.headline}</h3>
+              <p class="text-xs text-slate-600">Peserta: <strong>${item.userName}</strong> — ${item.subheadline}</p>
+            </div>
+
+            <div class="flex flex-wrap items-center gap-2.5 shrink-0">
+              <button type="button" data-history-view="${idx}" class="history-view-btn px-4 py-2 rounded-xl bg-white hover:bg-indigo-50 text-indigo-700 border border-indigo-200 font-bold text-xs transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-chart-pie"></i>
+                <span>Lihat Detail</span>
+              </button>
+              <button type="button" data-history-cert="${idx}" class="history-cert-btn px-4 py-2 rounded-xl bg-amber-500 hover:bg-amber-400 text-slate-950 font-extrabold text-xs transition-colors flex items-center gap-1.5">
+                <i class="fa-solid fa-award"></i>
+                <span>Sertifikat</span>
+              </button>
+              <button type="button" data-history-delete="${idx}" class="history-del-btn w-9 h-9 rounded-xl bg-white hover:bg-rose-50 text-slate-400 hover:text-rose-600 border border-slate-200 flex items-center justify-center transition-colors" title="Hapus item ini">
+                <i class="fa-solid fa-trash-can text-xs"></i>
+              </button>
+            </div>
+          </div>
+        `)
+        .join('');
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 13: UTILITAS UI (TOAST NOTIFIKASI & MODAL KONFIRMASI IN-PAGE)
+     * ========================================================================
+     */
+    function showToast(message, type = 'info') {
+      const container = document.getElementById('toastContainer');
+      if (!container) return;
+
+      const styles = {
+        success: 'bg-emerald-600 text-white border-emerald-500',
+        warning: 'bg-amber-500 text-slate-950 border-amber-400',
+        info: 'bg-slate-900 text-white border-slate-700'
+      };
+      const icons = {
+        success: 'fa-solid fa-circle-check',
+        warning: 'fa-solid fa-clock',
+        info: 'fa-solid fa-sparkles'
+      };
+
+      const toast = document.createElement('div');
+      toast.className = `pointer-events-auto px-4 py-3 rounded-2xl border shadow-lg flex items-center gap-3 text-xs sm:text-sm font-semibold fade-enter ${styles[type] || styles.info}`;
+      toast.innerHTML = `
+        <i class="${icons[type] || icons.info} text-base shrink-0"></i>
+        <span class="flex-1">${message}</span>
+      `;
+
+      container.appendChild(toast);
+      setTimeout(() => {
+        toast.style.opacity = '0';
+        toast.style.transition = 'opacity 0.25s ease';
+        setTimeout(() => toast.remove(), 260);
+      }, 3200);
+    }
+
+    function openConfirmDialog(title, message, onConfirm) {
+      document.getElementById('confirmDialogTitle').textContent = title;
+      document.getElementById('confirmDialogMessage').textContent = message;
+      AppState.confirmCallback = onConfirm;
+      document.getElementById('confirmDialogModal').classList.remove('hidden');
+    }
+
+    function closeConfirmDialog() {
+      AppState.confirmCallback = null;
+      document.getElementById('confirmDialogModal').classList.add('hidden');
+    }
+
+    /**
+     * ========================================================================
+     * BAGIAN 14: EVENT LISTENERS & DELEGASI INTERAKSI
+     * ========================================================================
+     */
+    function attachEventListeners() {
+      // 1. Klik Logo kembali ke Beranda
+      document.getElementById('brandLogoBtn')?.addEventListener('click', () => navigateToView('home'));
+
+      // 2. Navigasi SPA Desktop & Mobile
+      document.querySelectorAll('[data-nav]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const target = btn.getAttribute('data-nav');
+          if (target) navigateToView(target);
+        });
+      });
+
+      // 3. Toggle Mobile Drawer
+      document.getElementById('mobileMenuToggleBtn')?.addEventListener('click', () => {
+        const drawer = document.getElementById('mobileNavDrawer');
+        const icon = document.getElementById('mobileMenuIcon');
+        if (!drawer) return;
+        const isHidden = drawer.classList.contains('hidden');
+        if (isHidden) {
+          drawer.classList.remove('hidden');
+          icon.className = 'fa-solid fa-xmark text-lg';
+        } else {
+          drawer.classList.add('hidden');
+          icon.className = 'fa-solid fa-bars text-base';
+        }
+      });
+
+      // 4. Klik Badge Sertifikat di Header -> Menuju Riwayat & Sertifikat
+      document.getElementById('headerCertQuickBtn')?.addEventListener('click', () => navigateToView('history'));
+
+      // 5. Tombol Hero Section
+      document.getElementById('heroStartExploreBtn')?.addEventListener('click', () => {
+        const el = document.getElementById('ageFilterSection');
+        if (el) el.scrollIntoView({ behavior: 'smooth' });
+      });
+      document.getElementById('heroQuickMbtiBtn')?.addEventListener('click', () => startTest('mbti'));
+
+      // Pill Segmen Usia di Hero
+      document.querySelectorAll('[data-hero-age]').forEach(btn => {
+        btn.addEventListener('click', () => {
+          const age = btn.getAttribute('data-hero-age');
+          setAgeFilter(age, true);
+          document.getElementById('homePopularTestsGrid')?.scrollIntoView({ behavior: 'smooth' });
+        });
+      });
+
+      // 6. Kartu Filter Kategori Usia di Beranda
+      document.querySelectorAll('.age-filter-card').forEach(card => {
+        card.addEventListener('click', () => {
+          const age = card.getAttribute('data-age-filter') || 'all';
+          setAgeFilter(age, true);
+        });
+      });
+
+      document.getElementById('goToFullCatalogBtn')?.addEventListener('click', () => navigateToView('catalog'));
+      document.getElementById('aboutBackToCatalogBtn')?.addEventListener('click', () => navigateToView('catalog'));
+
+      // 7. Filter & Pencarian di Katalog
+      document.getElementById('catalogSearchInput')?.addEventListener('input', e => {
+        AppState.catalogSearchQuery = e.target.value;
+        renderCatalogTests();
+      });
+      document.getElementById('catalogAgeSelect')?.addEventListener('change', e => {
+        setAgeFilter(e.target.value, false);
+      });
+
+      // 8. Delegasi Klik untuk tombol "Mulai Tes", Opsi Kuis, Pill Soal, & Riwayat
+      document.addEventListener('click', e => {
+        // Mulai Tes dari Beranda atau Katalog
+        const startBtn = e.target.closest('[data-start-test]');
+        if (startBtn) {
+          const testId = startBtn.getAttribute('data-start-test');
+          startTest(testId, false);
+          return;
+        }
+
+        // Pilih Jawaban Kuis
+        const optCard = e.target.closest('.quiz-option-card');
+        if (optCard) {
+          const optIdx = Number(optCard.getAttribute('data-option-idx'));
+          selectQuizOption(optIdx);
+          return;
+        }
+
+        // Loncat ke Nomor Soal via Pill
+        const pillBtn = e.target.closest('.quiz-pill-btn');
+        if (pillBtn) {
+          const qIdx = Number(pillBtn.getAttribute('data-jump-q'));
+          AppState.activeQuiz.currentIndex = qIdx;
+          renderCurrentQuestion();
+          return;
+        }
+
+        // Lihat Detail Hasil dari Riwayat
+        const viewHistBtn = e.target.closest('[data-history-view]');
+        if (viewHistBtn) {
+          const idx = Number(viewHistBtn.getAttribute('data-history-view'));
+          const item = AppState.history[idx];
+          if (item) {
+            AppState.currentResult = item;
+            renderResultDashboard(item);
+            navigateToView('result');
+          }
+          return;
+        }
+
+        // Buka Sertifikat dari Riwayat
+        const certHistBtn = e.target.closest('[data-history-cert]');
+        if (certHistBtn) {
+          const idx = Number(certHistBtn.getAttribute('data-history-cert'));
+          const item = AppState.history[idx];
+          if (item) {
+            openCertificateModal(item);
+          }
+          return;
+        }
+
+        // Hapus 1 Item Riwayat
+        const delHistBtn = e.target.closest('[data-history-delete]');
+        if (delHistBtn) {
+          const idx = Number(delHistBtn.getAttribute('data-history-delete'));
+          openConfirmDialog(
+            'Hapus Riwayat Tes',
+            'Apakah Anda yakin ingin menghapus hasil tes ini dari daftar riwayat perangkat?',
+            () => {
+              AppState.history.splice(idx, 1);
+              SafeStorage.set(StorageKeys.TEST_HISTORY, AppState.history);
+              updateHeaderProfileUI();
+              renderHistoryView();
+              showToast('Item riwayat berhasil dihapus.', 'info');
+            }
+          );
+        }
+      });
+
+      // 9. Navigasi Kuis: Tombol Sebelumnya, Selanjutnya/Selesai, dan Keluar
+      document.getElementById('quizPrevBtn')?.addEventListener('click', () => {
+        if (AppState.activeQuiz.currentIndex > 0) {
+          AppState.activeQuiz.currentIndex -= 1;
+          saveActiveQuizSession();
+          renderCurrentQuestion();
+        }
+      });
+
+      document.getElementById('quizNextBtn')?.addEventListener('click', () => {
+        const testObj = TESTS_DATABASE.find(t => t.id === AppState.activeQuiz.testId);
+        if (!testObj) return;
+
+        const idx = AppState.activeQuiz.currentIndex;
+        // Pastikan pengguna sudah memilih jawaban untuk soal ini
+        if (AppState.activeQuiz.answers[idx] === undefined) {
+          showToast('Silakan pilih salah satu jawaban terlebih dahulu.', 'warning');
+          return;
+        }
+
+        if (idx < testObj.questions.length - 1) {
+          AppState.activeQuiz.currentIndex += 1;
+          saveActiveQuizSession();
+          renderCurrentQuestion();
+        } else {
+          finishQuizAndCalculateResult();
+        }
+      });
+
+      document.getElementById('quitQuizBtn')?.addEventListener('click', () => {
+        navigateToView('home');
+        showToast('Progres tes Anda disimpan sementara. Anda dapat melanjutkannya kapan saja.', 'info');
+      });
+
+      // Banner Lanjutkan Sesi
+      document.getElementById('resumeSavedSessionBtn')?.addEventListener('click', () => {
+        const saved = SafeStorage.get(StorageKeys.ACTIVE_SESSION, null);
+        if (saved && saved.testId) {
+          startTest(saved.testId, true);
+        }
+      });
+      document.getElementById('discardSavedSessionBtn')?.addEventListener('click', () => {
+        clearActiveQuizSession();
+        showToast('Sesi tes sementara telah dihapus.', 'info');
+      });
+
+      // 10. Tombol Action di Halaman Hasil (Result Dashboard)
+      document.getElementById('resultSaveHistoryBtn')?.addEventListener('click', () => {
+        saveCurrentResultToHistory();
+      });
+
+      document.getElementById('resultOpenCertModalBtn')?.addEventListener('click', () => {
+        openCertificateModal(AppState.currentResult);
+      });
+
+      document.getElementById('resultRetakeTestBtn')?.addEventListener('click', () => {
+        if (AppState.currentResult && AppState.currentResult.testId) {
+          startTest(AppState.currentResult.testId, false);
+        } else {
+          navigateToView('catalog');
+        }
+      });
+
+      // 11. Tombol Halaman Riwayat
+      document.getElementById('historyGoTakeTestBtn')?.addEventListener('click', () => navigateToView('catalog'));
+      document.getElementById('clearAllHistoryBtn')?.addEventListener('click', () => {
+        if (AppState.history.length === 0) {
+          showToast('Riwayat tes sudah kosong.', 'info');
+          return;
+        }
+        openConfirmDialog(
+          'Bersihkan Seluruh Riwayat',
+          'Seluruh catatan riwayat tes dan koleksi sertifikat di browser ini akan dihapus. Lanjutkan?',
+          () => {
+            AppState.history = [];
+            SafeStorage.set(StorageKeys.TEST_HISTORY, []);
+            updateHeaderProfileUI();
+            renderHistoryView();
+            showToast('Seluruh riwayat tes telah dibersihkan.', 'info');
+          }
+        );
+      });
+
+      // 12. Modal Sertifikat: Perbarui Nama, Unduh PNG, Cetak PDF, Tutup
+      document.getElementById('refreshCertCanvasBtn')?.addEventListener('click', () => {
+        const inputVal = document.getElementById('certRecipientNameInput')?.value.trim();
+        if (inputVal && AppState.currentResult) {
+          AppState.currentResult.userName = inputVal;
+          AppState.userProfile.name = inputVal;
+          SafeStorage.set(StorageKeys.USER_PROFILE, AppState.userProfile);
+          SafeStorage.set(StorageKeys.TEST_HISTORY, AppState.history);
+          updateHeaderProfileUI();
+          document.getElementById('resultUserNameDisplay').textContent = inputVal;
+          renderCertificateCanvas(AppState.currentResult);
+          showToast('Nama pada sertifikat berhasil diperbarui!', 'success');
+        }
+      });
+
+      document.getElementById('certRecipientNameInput')?.addEventListener('input', e => {
+        const val = e.target.value.trim() || 'Sahabat MindQuest';
+        if (AppState.currentResult) {
+          AppState.currentResult.userName = val;
+          renderCertificateCanvas(AppState.currentResult);
+        }
+      });
+
+      document.getElementById('downloadCertPngBtn')?.addEventListener('click', () => {
+        downloadCertificateAsPng();
+      });
+
+      document.getElementById('printCertPdfBtn')?.addEventListener('click', () => {
+        window.print();
+      });
+
+      document.getElementById('closeCertModalBtn')?.addEventListener('click', () => {
+        document.getElementById('certificateModal')?.classList.add('hidden');
+      });
+
+      // 13. Modal Edit Profil Pengguna
+      document.getElementById('openProfileModalBtn')?.addEventListener('click', () => {
+        document.getElementById('profileNameInput').value = AppState.userProfile.name || '';
+        document.getElementById('profileAgeGroupSelect').value = AppState.userProfile.ageGroup || 'all';
+        document.getElementById('profileModal')?.classList.remove('hidden');
+      });
+
+      const closeProfileModal = () => document.getElementById('profileModal')?.classList.add('hidden');
+      document.getElementById('closeProfileModalBtn')?.addEventListener('click', closeProfileModal);
+      document.getElementById('cancelProfileModalBtn')?.addEventListener('click', closeProfileModal);
+
+      document.getElementById('profileForm')?.addEventListener('submit', e => {
+        e.preventDefault();
+        const newName = document.getElementById('profileNameInput')?.value.trim() || 'Sahabat MindQuest';
+        const newAge = document.getElementById('profileAgeGroupSelect')?.value || 'all';
+
+        AppState.userProfile = { name: newName, ageGroup: newAge };
+        SafeStorage.set(StorageKeys.USER_PROFILE, AppState.userProfile);
+
+        updateHeaderProfileUI();
+        setAgeFilter(newAge, false);
+        closeProfileModal();
+        showToast(`Profil disimpan! Halo, ${newName}.`, 'success');
+      });
+
+      // 14. Modal Konfirmasi In-Page
+      document.getElementById('confirmDialogCancelBtn')?.addEventListener('click', closeConfirmDialog);
+      document.getElementById('confirmDialogOkBtn')?.addEventListener('click', () => {
+        if (typeof AppState.confirmCallback === 'function') {
+          AppState.confirmCallback();
+        }
+        closeConfirmDialog();
+      });
+    }
+
+    // Jalankan Aplikasi saat DOM selesai dimuat
+    window.addEventListener('DOMContentLoaded', initApp);
+  </script>
+</body>
+</html>
